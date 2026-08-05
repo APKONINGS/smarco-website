@@ -4,11 +4,11 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: '#2563EB',
-        'primary-dark': '#1D4ED8',
-        'primary-light': '#60A5FA',
-        accent: '#F97316',
-        'accent-dark': '#EA580C',
+        primary: '#0000A2',
+        'primary-dark': '#00006E',
+        'primary-light': '#4A4AD6',
+        accent: '#009C17',
+        'accent-dark': '#00790F',
         background: '#F8FAFC',
         surface: '#FFFFFF',
         ink: '#0F172A',
@@ -17,8 +17,8 @@ export default {
         deep: '#020617',
       },
       fontFamily: {
-        display: ['"Space Grotesk"', 'system-ui', 'sans-serif'],
-        serif: ['"Fraunces"', 'serif'],
+        display: ['"Poppins"', 'system-ui', 'sans-serif'],
+        serif: ['"Poppins"', 'system-ui', 'sans-serif'],
         body: ['"Inter"', 'system-ui', 'sans-serif'],
         mono: ['"Manrope"', 'system-ui', 'sans-serif'],
       },

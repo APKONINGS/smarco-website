@@ -342,7 +342,7 @@ function ArchitectureShuffler() {
                 <span
                   key={idx}
                   className="h-1 w-1 rounded-full"
-                  style={{ background: idx < 24 - offset * 6 ? '#2563EB' : '#E2E8F0' }}
+                  style={{ background: idx < 24 - offset * 6 ? '#0000A2' : '#E2E8F0' }}
                 />
               ))}
             </div>
@@ -364,9 +364,9 @@ function SiteWatch() {
 
   const statuses = [
     { text: 'Surveying · site staked out', label: 'Survey', tone: 'primary' },
-    { text: 'Non-conformance flagged · bay 3', label: 'Flagged', tone: 'accent' },
+    { text: 'Non-conformance flagged · bay 3', label: 'Flagged', tone: 'warning' },
     { text: 'Engineer on-site · reviewing', label: 'Review', tone: 'primary' },
-    { text: 'Inspection passed · delivered', label: 'Passed', tone: 'emerald' },
+    { text: 'Inspection passed · delivered', label: 'Passed', tone: 'accent' },
   ]
 
   useEffect(() => {
@@ -398,8 +398,8 @@ function SiteWatch() {
 
   const status = statuses[statusIdx]
   const toneText =
-    status.tone === 'emerald' ? 'text-emerald-600' : status.tone === 'accent' ? 'text-accent-dark' : 'text-primary-dark'
-  const toneDot = status.tone === 'emerald' ? 'bg-emerald-500' : status.tone === 'accent' ? 'bg-accent' : 'bg-primary'
+    status.tone === 'accent' ? 'text-accent-dark' : status.tone === 'warning' ? 'text-amber-600' : 'text-primary-dark'
+  const toneDot = status.tone === 'accent' ? 'bg-accent' : status.tone === 'warning' ? 'bg-amber-500' : 'bg-primary'
 
   return (
     <div
@@ -446,7 +446,7 @@ function SiteWatch() {
               width: `${d.size}px`,
               height: `${d.size}px`,
               animation: `rain-fall ${d.dur} cubic-bezier(0.55,0.05,0.7,0.45) ${d.delay} infinite`,
-              filter: 'drop-shadow(0 1px 2px rgba(234,88,12,0.35))',
+              filter: 'drop-shadow(0 1px 2px rgba(0,121,15,0.35))',
               transform: 'translateX(-50%)',
             }}
             viewBox="0 0 24 24"
@@ -454,8 +454,8 @@ function SiteWatch() {
             <defs>
               <radialGradient id={`spark-${i}`} cx="50%" cy="35%">
                 <stop offset="0%" stopColor="#FFFFFF" />
-                <stop offset="40%" stopColor="#F97316" />
-                <stop offset="100%" stopColor="#EA580C" />
+                <stop offset="40%" stopColor="#009C17" />
+                <stop offset="100%" stopColor="#00790F" />
               </radialGradient>
             </defs>
             <path
@@ -498,7 +498,7 @@ function SiteWatch() {
       <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between z-20">
         <div className="flex items-center gap-2 min-w-0">
           <span className={`relative h-2 w-2 rounded-full ${toneDot}`}>
-            {status.tone === 'accent' && <span className={`absolute inset-0 rounded-full ${toneDot} animate-ping`} />}
+            {status.tone === 'warning' && <span className={`absolute inset-0 rounded-full ${toneDot} animate-ping`} />}
           </span>
           <span
             key={status.text}
