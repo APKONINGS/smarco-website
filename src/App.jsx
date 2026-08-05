@@ -91,11 +91,13 @@ function Navbar() {
       >
         <div className="flex items-center justify-between gap-6">
           <a href="#home" className="flex items-center gap-2.5 group">
-            <img
-              src="/logo.png"
-              alt="SMART Architecture & Construction Co. Ltd logo"
-              className="h-10 w-10 sm:h-11 sm:w-11 object-contain drop-shadow-sm transition-transform group-hover:scale-105"
-            />
+            <span className="flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-white shadow-sm overflow-hidden shrink-0 transition-transform group-hover:scale-105">
+              <img
+                src="/logo.png"
+                alt="SMART Architecture & Construction Co. Ltd logo"
+                className="h-full w-full object-cover"
+              />
+            </span>
             <span
               className={`font-display font-bold tracking-tight text-lg leading-tight ${
                 scrolled ? 'text-ink' : 'text-white'
@@ -151,7 +153,9 @@ function Navbar() {
         >
           <div className="flex items-center justify-between mb-10">
             <div className="flex items-center gap-2.5">
-              <img src="/logo.png" alt="SMART Architecture & Construction Co. Ltd logo" className="h-9 w-9 object-contain" />
+              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-sm overflow-hidden shrink-0">
+                <img src="/logo.png" alt="SMART Architecture & Construction Co. Ltd logo" className="h-full w-full object-cover" />
+              </span>
               <span className="font-display font-bold text-xl text-ink">SMART Architecture</span>
             </div>
             <button onClick={() => setOpen(false)} className="p-2 rounded-full bg-divider/40" aria-label="Close menu">
@@ -1190,6 +1194,16 @@ function ContactForm() {
                 </span>
               </a>
 
+              <a href="tel:+237679684854" className="lift-on-hover flex items-center gap-4 group">
+                <span className="h-12 w-12 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center group-hover:bg-primary transition">
+                  <Phone className="h-5 w-5 text-primary group-hover:text-white" />
+                </span>
+                <span>
+                  <span className="block font-mono text-[10px] uppercase tracking-widest text-muted">Alternative line</span>
+                  <span className="font-display font-semibold text-ink text-lg">+237 679 684 854</span>
+                </span>
+              </a>
+
               <a href="tel:+237677915878" className="lift-on-hover flex items-center gap-4 group">
                 <span className="h-12 w-12 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center group-hover:bg-primary transition">
                   <Phone className="h-5 w-5 text-primary group-hover:text-white" />
@@ -1352,7 +1366,9 @@ function Footer() {
         <div className="grid grid-cols-2 lg:grid-cols-5 gap-10">
           <div className="col-span-2">
             <div className="flex items-center gap-2.5 mb-4">
-              <img src="/logo.png" alt="SMART Architecture & Construction Co. Ltd logo" className="h-12 w-12 object-contain" />
+              <span className="flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-sm overflow-hidden shrink-0">
+                <img src="/logo.png" alt="SMART Architecture & Construction Co. Ltd logo" className="h-full w-full object-cover" />
+              </span>
               <span className="font-display font-bold text-lg">SMART Architecture</span>
             </div>
             <p className="text-white/50 text-sm leading-relaxed max-w-xs">
@@ -1396,12 +1412,22 @@ function Footer() {
                 </a>
               </li>
               <li>
+                <a href="tel:+237679684854" className="text-white/65 hover:text-primary transition text-sm">
+                  +237 679 684 854
+                </a>
+              </li>
+              <li>
+                <a href="tel:+237677915878" className="text-white/65 hover:text-primary transition text-sm">
+                  +237 677 915 878
+                </a>
+              </li>
+              <li>
                 <a href="mailto:ebuafield@gmail.com" className="text-white/65 hover:text-primary transition text-sm">
                   ebuafield@gmail.com
                 </a>
               </li>
               <li className="text-white/65 text-sm">Bomaka, Opposite FHS, Buea, Cameroon</li>
-              <li className="text-white/65 text-sm">Facebook — Ebua Fidelis</li>
+              <li className="text-white/65 text-sm">Facebook — SMARCO Co. LTD</li>
             </ul>
           </div>
         </div>

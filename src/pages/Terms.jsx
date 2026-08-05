@@ -11,7 +11,9 @@ export default function Terms() {
         </Link>
 
         <div className="flex items-center gap-2.5 mb-8">
-          <img src="/logo.png" alt="SMART Architecture & Construction Co. Ltd logo" className="h-10 w-10 object-contain" />
+          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-sm overflow-hidden shrink-0">
+            <img src="/logo.png" alt="SMART Architecture & Construction Co. Ltd logo" className="h-full w-full object-cover" />
+          </span>
           <span className="font-display font-bold text-lg text-ink">SMART Architecture</span>
         </div>
 
