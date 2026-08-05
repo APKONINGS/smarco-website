@@ -94,8 +94,8 @@ function Navbar() {
           <a href="#home" className="flex items-center gap-3 group">
             <Logo className="h-[46px] w-[46px] sm:h-[50px] sm:w-[50px] transition-transform group-hover:scale-105" />
             <span
-              className={`font-display font-bold tracking-tight text-lg leading-tight ${
-                scrolled ? 'text-ink' : 'text-white'
+              className={`font-display font-black tracking-tight text-lg leading-tight ${
+                scrolled ? 'text-accent-dark' : 'text-accent-light'
               } transition-colors`}
             >
               SMART Architecture
@@ -149,7 +149,7 @@ function Navbar() {
           <div className="flex items-center justify-between mb-10">
             <div className="flex items-center gap-2.5">
               <Logo className="h-10 w-10" />
-              <span className="font-display font-bold text-xl text-ink">SMART Architecture</span>
+              <span className="font-display font-black text-xl text-accent-dark">SMART Architecture</span>
             </div>
             <button onClick={() => setOpen(false)} className="p-2 rounded-full bg-divider/40" aria-label="Close menu">
               <X className="h-5 w-5" />
@@ -218,8 +218,9 @@ function Hero() {
       {/* Decorative floating construction sparks */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-1/4 right-[18%] h-2 w-2 rounded-full bg-accent/70 animate-float" style={{ animationDelay: '0s' }} />
-        <div className="absolute top-[55%] right-[10%] h-1.5 w-1.5 rounded-full bg-white/40 animate-float" style={{ animationDelay: '1.5s' }} />
+        <div className="absolute top-[55%] right-[10%] h-1.5 w-1.5 rounded-full bg-accent-light/50 animate-float" style={{ animationDelay: '1.5s' }} />
         <div className="absolute top-[40%] right-[26%] h-1 w-1 rounded-full bg-primary-light/70 animate-float" style={{ animationDelay: '3s' }} />
+        <div className="absolute top-[68%] right-[22%] h-1.5 w-1.5 rounded-full bg-white/30 animate-float" style={{ animationDelay: '2.2s' }} />
       </div>
 
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
@@ -270,7 +271,7 @@ function Hero() {
           <div className="hero-meta mt-12 flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
             {['10+ Years Experience', '100+ Projects Delivered', 'Licensed Engineers', 'Quality Guaranteed'].map((item) => (
               <span key={item} className="flex items-center gap-2 text-white/70 text-xs sm:text-sm font-medium">
-                <CheckCircle2 className="h-3.5 w-3.5 text-primary-light" />
+                <CheckCircle2 className="h-3.5 w-3.5 text-accent-light" />
                 {item}
               </span>
             ))}
@@ -408,8 +409,8 @@ function SiteWatch() {
       {/* Header strip */}
       <div className="absolute top-3 left-4 right-4 flex items-center justify-between z-20">
         <div className="flex items-center gap-2">
-          <HardHat className="h-3.5 w-3.5 text-primary-dark" strokeWidth={2.2} />
-          <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-primary-dark">
+          <HardHat className="h-3.5 w-3.5 text-accent-dark" strokeWidth={2.2} />
+          <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-accent-dark">
             Site Supervision
           </span>
         </div>
@@ -639,6 +640,7 @@ function Features() {
       sub: 'Concept to construction-ready',
       text: 'From first sketch to fully detailed drawings, we shape spaces that are as functional as they are beautiful — tailored to how you live and work.',
       Component: ArchitectureShuffler,
+      tone: 'primary',
     },
     {
       eyebrow: '02 / Oversight',
@@ -646,6 +648,7 @@ function Features() {
       sub: 'Daily oversight, zero surprises',
       text: 'Our engineers supervise every phase on-site — verifying materials, workmanship, and safety so your build meets specification at every stage.',
       Component: SiteWatch,
+      tone: 'accent',
     },
     {
       eyebrow: '03 / Delivery',
@@ -653,6 +656,7 @@ function Features() {
       sub: 'On time, on budget',
       text: 'We plan every milestone — from mobilization to handover — and keep you informed with clear timelines and transparent progress reporting.',
       Component: ProjectScheduler,
+      tone: 'primary',
     },
   ]
 
@@ -660,7 +664,7 @@ function Features() {
     <section id="services" ref={sectionRef} className="relative py-28 sm:py-40 px-6 sm:px-10 lg:px-16">
       <div className="max-w-7xl mx-auto">
         <div className="feature-heading max-w-3xl mb-16 sm:mb-24">
-          <span className="font-mono text-xs uppercase tracking-[0.25em] text-primary-dark">
+          <span className="font-mono text-xs uppercase tracking-[0.25em] text-accent-dark">
             ╱ Our core disciplines
           </span>
           <h2 className="font-display font-extrabold text-4xl sm:text-5xl md:text-6xl text-ink mt-4 leading-[1.05] tracking-tight">
@@ -673,12 +677,16 @@ function Features() {
           {cards.map((card, idx) => (
             <article
               key={idx}
-              className="feature-card group relative bg-surface border border-divider rounded-5xl p-7 hover:border-primary/40 transition-colors duration-500 shadow-sm hover:shadow-xl hover:shadow-primary/10"
+              className={`feature-card group relative bg-surface border border-divider rounded-5xl p-7 transition-colors duration-500 shadow-sm hover:shadow-xl ${
+                card.tone === 'accent' ? 'hover:border-accent/40 hover:shadow-accent/10' : 'hover:border-primary/40 hover:shadow-primary/10'
+              }`}
             >
               <div className="flex items-center justify-between mb-6">
                 <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted">{card.eyebrow}</span>
                 <ArrowUpRight
-                  className="h-5 w-5 text-ink/30 group-hover:text-primary group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-all"
+                  className={`h-5 w-5 text-ink/30 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-all ${
+                    card.tone === 'accent' ? 'group-hover:text-accent' : 'group-hover:text-primary'
+                  }`}
                   strokeWidth={1.8}
                 />
               </div>
@@ -687,7 +695,9 @@ function Features() {
 
               <div className="mt-6">
                 <h3 className="font-display font-bold text-2xl text-ink leading-tight">{card.heading}</h3>
-                <p className="font-serif italic text-primary-dark text-sm mt-1">{card.sub}</p>
+                <p className={`font-serif italic text-sm mt-1 ${card.tone === 'accent' ? 'text-accent-dark' : 'text-primary-dark'}`}>
+                  {card.sub}
+                </p>
                 <p className="text-muted text-[15px] mt-4 leading-relaxed">{card.text}</p>
               </div>
             </article>
@@ -767,6 +777,7 @@ function Pillars() {
       suffix: '+',
       label: 'years of practice',
       desc: 'A decade delivering architecture and civil engineering projects across the Southwest Region and beyond.',
+      tone: 'primary',
     },
     {
       n: '02',
@@ -775,6 +786,7 @@ function Pillars() {
       suffix: '+',
       label: 'projects completed',
       desc: 'From private residences to institutional buildings, each project delivered to specification and on schedule.',
+      tone: 'accent',
     },
     {
       n: '03',
@@ -783,14 +795,15 @@ function Pillars() {
       suffix: '%',
       label: 'licensed engineering',
       desc: 'Every design and site supervision is led by qualified, registered engineers — no shortcuts, no guesswork.',
+      tone: 'primary',
     },
   ]
 
   return (
     <section id="philosophy" ref={ref} className="relative py-28 sm:py-40 px-6 sm:px-10 lg:px-16 overflow-hidden">
       <div className="absolute inset-0 grid-bg opacity-60" />
-      <div className="absolute -top-32 left-1/2 -translate-x-1/2 h-64 w-[44rem] rounded-full bg-primary/15 blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 right-0 h-72 w-72 rounded-full bg-accent/8 blur-3xl pointer-events-none" />
+      <div className="absolute -top-32 left-1/2 -translate-x-1/2 h-64 w-[44rem] rounded-full bg-primary/10 blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 right-0 h-72 w-72 rounded-full bg-accent/14 blur-3xl pointer-events-none" />
 
       <div className="relative max-w-7xl mx-auto">
         <div
@@ -799,7 +812,7 @@ function Pillars() {
           }`}
         >
           <div className="max-w-2xl">
-            <span className="inline-block font-mono text-xs uppercase tracking-[0.3em] text-primary-dark mb-5">
+            <span className="inline-block font-mono text-xs uppercase tracking-[0.3em] text-accent-dark mb-5">
               ╱ Three pillars
             </span>
             <h2 className="font-display font-extrabold text-4xl sm:text-5xl md:text-6xl text-ink leading-[1.05] tracking-tight">
@@ -826,29 +839,43 @@ function Pillars() {
                 <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-muted">
                   {p.n} / {p.title}
                 </span>
-                <span className="h-1.5 w-1.5 rounded-full bg-primary/40 group-hover:bg-primary group-hover:scale-150 transition-all duration-500" />
+                <span
+                  className={`h-1.5 w-1.5 rounded-full group-hover:scale-150 transition-all duration-500 ${
+                    p.tone === 'accent' ? 'bg-accent/40 group-hover:bg-accent' : 'bg-primary/40 group-hover:bg-primary'
+                  }`}
+                />
               </div>
 
               <div className="flex items-end gap-1 leading-none">
                 <span className="font-display font-extrabold text-[6rem] sm:text-[8rem] md:text-[9rem] leading-[0.85] text-ink tabular-nums tracking-tight">
                   <CountUp target={p.target} duration={1800 + i * 200} />
                 </span>
-                <span className="font-serif italic font-medium text-4xl sm:text-5xl md:text-6xl text-primary-dark mb-3 sm:mb-4">
+                <span
+                  className={`font-serif italic font-medium text-4xl sm:text-5xl md:text-6xl mb-3 sm:mb-4 ${
+                    p.tone === 'accent' ? 'text-accent-dark' : 'text-primary-dark'
+                  }`}
+                >
                   {p.suffix}
                 </span>
               </div>
 
-              <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-primary-dark mt-5">{p.label}</p>
+              <p className={`font-mono text-[10px] uppercase tracking-[0.25em] mt-5 ${p.tone === 'accent' ? 'text-accent-dark' : 'text-primary-dark'}`}>
+                {p.label}
+              </p>
               <p className="text-muted text-[15px] mt-6 leading-relaxed max-w-xs">{p.desc}</p>
 
               <div className="absolute bottom-0 left-9 right-9 sm:left-12 sm:right-12 h-px bg-divider overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-transparent via-primary to-transparent"
+                  className={`h-full bg-gradient-to-r from-transparent to-transparent ${p.tone === 'accent' ? 'via-accent' : 'via-primary'}`}
                   style={{ animation: `pillar-sweep 4s ease-in-out ${i * 0.4}s infinite` }}
                 />
               </div>
 
-              <span className="absolute top-9 right-9 sm:top-12 sm:right-12 font-mono text-[9px] uppercase tracking-widest text-primary/30">
+              <span
+                className={`absolute top-9 right-9 sm:top-12 sm:right-12 font-mono text-[9px] uppercase tracking-widest ${
+                  p.tone === 'accent' ? 'text-accent/30' : 'text-primary/30'
+                }`}
+              >
                 {p.n}.cm
               </span>
             </article>
@@ -929,10 +956,10 @@ function Protocol() {
   return (
     <section id="process" ref={containerRef} className="relative px-4 sm:px-6 py-20">
       <div className="max-w-7xl mx-auto mb-16 px-2 sm:px-10">
-        <span className="font-mono text-xs uppercase tracking-[0.25em] text-primary-dark">╱ How we work</span>
+        <span className="font-mono text-xs uppercase tracking-[0.25em] text-accent-dark">╱ How we work</span>
         <h2 className="font-display font-extrabold text-4xl sm:text-5xl md:text-6xl text-ink mt-4 leading-[1.05] tracking-tight max-w-3xl">
           Three steps.
-          <span className="block font-serif italic font-medium text-primary-dark">No surprises.</span>
+          <span className="block font-serif italic font-medium text-accent-dark">No surprises.</span>
         </h2>
       </div>
 
@@ -946,19 +973,19 @@ function Protocol() {
               <div className="lg:col-span-3 p-8 sm:p-12 lg:p-16 flex flex-col justify-between">
                 <div className="flex items-center justify-between">
                   <span className="font-mono text-xs uppercase tracking-[0.25em] text-muted">{step.meta}</span>
-                  <span className="font-mono text-[10px] uppercase tracking-widest text-primary-dark bg-primary/10 px-2.5 py-1 rounded-full">
+                  <span className="font-mono text-[10px] uppercase tracking-widest text-accent-dark bg-accent/10 px-2.5 py-1 rounded-full">
                     SMART Protocol
                   </span>
                 </div>
 
                 <div className="my-12">
-                  <span className="font-display font-extrabold text-[7rem] sm:text-[10rem] leading-none text-primary/15 -mb-4 block">
+                  <span className="font-display font-extrabold text-[7rem] sm:text-[10rem] leading-none text-accent/15 -mb-4 block">
                     {step.num}
                   </span>
                   <h3 className="font-display font-bold text-4xl sm:text-5xl md:text-6xl text-ink leading-[1.02] tracking-tight">
                     {step.title}
                   </h3>
-                  <p className="font-serif italic text-primary-dark text-2xl sm:text-3xl mt-3">{step.tagline}</p>
+                  <p className="font-serif italic text-accent-dark text-2xl sm:text-3xl mt-3">{step.tagline}</p>
                 </div>
 
                 <p className="text-muted text-base sm:text-lg leading-relaxed max-w-lg">{step.text}</p>
@@ -968,7 +995,7 @@ function Protocol() {
                 <img src={step.image} alt={step.alt} loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-deep/60 via-transparent to-deep/15" />
                 <div className="absolute top-5 left-5 flex items-center gap-2 bg-white/90 backdrop-blur-sm rounded-full pl-3 pr-4 py-1.5 shadow-lg">
-                  <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-accent" />
                   <span className="font-mono text-[10px] uppercase tracking-widest text-ink">Step {step.num}</span>
                 </div>
                 <div className="absolute bottom-4 right-4 font-mono text-[10px] uppercase tracking-widest text-white/70">
@@ -1005,16 +1032,16 @@ function ServicesGrid() {
   return (
     <section ref={ref} className="relative py-24 px-6 sm:px-10 lg:px-16 bg-deep text-white overflow-hidden rounded-t-6xl">
       <div className="absolute inset-0 grid-bg opacity-20" />
-      <div className="absolute -top-20 -right-20 h-96 w-96 rounded-full bg-primary/20 blur-3xl" />
-      <div className="absolute bottom-0 -left-20 h-72 w-72 rounded-full bg-accent/15 blur-3xl" />
+      <div className="absolute -top-20 -right-20 h-96 w-96 rounded-full bg-accent/18 blur-3xl" />
+      <div className="absolute bottom-0 -left-20 h-72 w-72 rounded-full bg-primary/18 blur-3xl" />
 
       <div className="relative max-w-7xl mx-auto">
         <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-6 mb-14">
           <div>
-            <span className="font-mono text-xs uppercase tracking-[0.25em] text-primary">╱ Everything we do</span>
+            <span className="font-mono text-xs uppercase tracking-[0.25em] text-accent-light">╱ Everything we do</span>
             <h2 className="font-display font-extrabold text-4xl sm:text-5xl md:text-6xl mt-4 leading-[1.05] tracking-tight">
               The full scope,
-              <span className="block font-serif italic font-medium text-primary">under one roof.</span>
+              <span className="block font-serif italic font-medium text-primary-light">under one roof.</span>
             </h2>
           </div>
           <p className="text-white/60 max-w-md text-base leading-relaxed">
@@ -1026,11 +1053,18 @@ function ServicesGrid() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-white/10 rounded-4xl overflow-hidden">
           {SERVICES_FULL.map((svc, i) => {
             const Icon = svc.icon
+            const isGreen = i % 2 === 0
             return (
               <div key={i} className="svc-tile group bg-deep p-7 sm:p-9 hover:bg-white/[0.02] transition-colors duration-500 relative">
                 <div className="flex items-start justify-between mb-6">
-                  <div className="h-12 w-12 rounded-2xl bg-primary/15 border border-primary/30 flex items-center justify-center group-hover:bg-primary group-hover:scale-110 transition-all duration-500">
-                    <Icon className="h-5 w-5 text-primary group-hover:text-white" strokeWidth={2} />
+                  <div
+                    className={`h-12 w-12 rounded-2xl border flex items-center justify-center group-hover:scale-110 transition-all duration-500 ${
+                      isGreen
+                        ? 'bg-accent/15 border-accent/30 group-hover:bg-accent'
+                        : 'bg-primary/15 border-primary/30 group-hover:bg-primary'
+                    }`}
+                  >
+                    <Icon className={`h-5 w-5 group-hover:text-white ${isGreen ? 'text-accent-light' : 'text-primary-light'}`} strokeWidth={2} />
                   </div>
                   <span className="font-mono text-[10px] text-white/30 uppercase tracking-widest">
                     {String(i + 1).padStart(2, '0')}
@@ -1075,16 +1109,19 @@ function TrustSignals() {
       Icon: ShieldCheck,
       title: 'Licensed Engineers',
       text: 'Every project is designed and supervised by registered, qualified engineers — technical expertise from concept to completion.',
+      tone: 'accent',
     },
     {
       Icon: Award,
       title: 'Led by Engr. Ebua Fidelis Mvo',
       text: 'Our CEO holds an MTech in Civil Engineering and DPET 2 certification, bringing hands-on technical leadership to every project.',
+      tone: 'accent',
     },
     {
       Icon: Clock,
       title: '10+ Years of Practice',
       text: 'A decade of architecture, civil engineering, and construction management experience delivering durable, cost-effective results.',
+      tone: 'primary',
     },
   ]
 
@@ -1092,22 +1129,22 @@ function TrustSignals() {
     <section ref={ref} className="relative py-14 sm:py-20 px-6">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-8">
-          <span className="font-mono text-xs uppercase tracking-[0.25em] text-primary-dark">╱ Why trust us</span>
+          <span className="font-mono text-xs uppercase tracking-[0.25em] text-accent-dark">╱ Why trust us</span>
           <h2 className="font-display font-extrabold text-3xl sm:text-4xl md:text-5xl text-ink mt-3 tracking-tight">
             More than a contractor.
           </h2>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-          {badges.map(({ Icon, title, text }, i) => (
+          {badges.map(({ Icon, title, text, tone }, i) => (
             <div
               key={i}
               style={{ transitionDelay: visible ? `${i * 120}ms` : '0ms' }}
-              className={`bg-white border border-divider rounded-4xl p-6 hover:border-primary/40 transition-all duration-700 ease-out shadow-sm ${
-                visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
-              }`}
+              className={`bg-white border border-divider rounded-4xl p-6 transition-all duration-700 ease-out shadow-sm ${
+                tone === 'accent' ? 'hover:border-accent/40' : 'hover:border-primary/40'
+              } ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
             >
-              <Icon className="h-6 w-6 text-primary mb-3" strokeWidth={1.8} />
+              <Icon className={`h-6 w-6 mb-3 ${tone === 'accent' ? 'text-accent-dark' : 'text-primary'}`} strokeWidth={1.8} />
               <h3 className="font-display font-bold text-lg text-ink mb-1.5">{title}</h3>
               <p className="text-muted text-sm leading-relaxed">{text}</p>
             </div>
@@ -1170,10 +1207,10 @@ function ContactForm() {
       <div className="max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-12 gap-10 lg:gap-16">
           <div className="lg:col-span-5">
-            <span className="font-mono text-xs uppercase tracking-[0.25em] text-primary-dark">╱ Contact</span>
+            <span className="font-mono text-xs uppercase tracking-[0.25em] text-accent-dark">╱ Contact</span>
             <h2 className="font-display font-extrabold text-4xl sm:text-5xl md:text-6xl text-ink mt-4 leading-[1.05] tracking-tight">
               Let&apos;s build
-              <span className="block font-serif italic font-medium text-primary-dark">something real.</span>
+              <span className="block font-serif italic font-medium text-accent-dark">something real.</span>
             </h2>
             <p className="text-muted text-lg mt-6 leading-relaxed max-w-md">
               Tell us about your project and we&apos;ll get back to you to discuss scope, budget, and next steps.
@@ -1231,8 +1268,8 @@ function ContactForm() {
               </div>
             </div>
 
-            <div className="mt-10 p-5 rounded-3xl bg-primary/5 border border-primary/15">
-              <p className="font-mono text-[10px] uppercase tracking-widest text-primary-dark mb-2">
+            <div className="mt-10 p-5 rounded-3xl bg-accent/5 border border-accent/15">
+              <p className="font-mono text-[10px] uppercase tracking-widest text-accent-dark mb-2">
                 Project confidentiality
               </p>
               <p className="text-sm text-muted leading-relaxed">
@@ -1289,7 +1326,7 @@ function ContactForm() {
                       {files.length > 0 && (
                         <div className="mt-4 flex flex-wrap gap-2 justify-center">
                           {files.map((f, i) => (
-                            <span key={i} className="inline-flex items-center gap-1.5 bg-primary/10 text-primary-dark text-xs px-3 py-1.5 rounded-full font-mono">
+                            <span key={i} className="inline-flex items-center gap-1.5 bg-accent/10 text-accent-dark text-xs px-3 py-1.5 rounded-full font-mono">
                               <CheckCircle2 className="h-3 w-3" />
                               {f.name.length > 22 ? f.name.slice(0, 22) + '…' : f.name}
                             </span>
@@ -1313,8 +1350,8 @@ function ContactForm() {
                 </>
               ) : (
                 <div className="text-center py-12">
-                  <div className="h-16 w-16 mx-auto rounded-full bg-primary/15 flex items-center justify-center mb-6">
-                    <CheckCircle2 className="h-8 w-8 text-primary-dark" />
+                  <div className="h-16 w-16 mx-auto rounded-full bg-accent/15 flex items-center justify-center mb-6">
+                    <CheckCircle2 className="h-8 w-8 text-accent-dark" />
                   </div>
                   <h3 className="font-display font-bold text-2xl text-ink mb-3">Thank you for reaching out</h3>
                   <p className="text-muted max-w-md mx-auto">
@@ -1337,13 +1374,14 @@ function Footer() {
   return (
     <footer className="relative bg-deep text-white rounded-t-6xl mt-12 overflow-hidden">
       <div className="absolute inset-0 grid-bg opacity-15" />
-      <div className="absolute -top-32 left-1/2 -translate-x-1/2 h-64 w-[40rem] rounded-full bg-primary/20 blur-3xl" />
+      <div className="absolute -top-32 left-1/2 -translate-x-1/2 h-64 w-[40rem] rounded-full bg-accent/16 blur-3xl" />
+      <div className="absolute top-1/3 right-0 h-56 w-56 rounded-full bg-primary/16 blur-3xl" />
 
       <div className="relative px-6 sm:px-10 lg:px-16 pt-20 pb-10 max-w-7xl mx-auto">
         <div className="border-b border-white/10 pb-12 mb-12">
           <h2 className="font-display font-extrabold text-5xl sm:text-7xl md:text-8xl leading-[0.92] tracking-tight">
             We Transform Your
-            <span className="font-serif italic font-medium text-primary block">Dreams To Reality.</span>
+            <span className="font-serif italic font-medium text-accent-light block">Dreams To Reality.</span>
           </h2>
           <div className="flex flex-col sm:flex-row sm:items-end justify-between mt-8 gap-6">
             <p className="text-white/50 max-w-md">
@@ -1363,7 +1401,7 @@ function Footer() {
           <div className="col-span-2">
             <div className="flex items-center gap-3 mb-4">
               <Logo className="h-14 w-14" />
-              <span className="font-display font-bold text-lg">SMART Architecture</span>
+              <span className="font-display font-black text-lg text-accent-light">SMART Architecture</span>
             </div>
             <p className="text-white/50 text-sm leading-relaxed max-w-xs">
               A modern engineering consultancy delivering architectural design, civil engineering, structural
@@ -1376,7 +1414,7 @@ function Footer() {
           </div>
 
           <div>
-            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-primary mb-4">Services</p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-accent-light mb-4">Services</p>
             <ul className="space-y-2.5">
               {SERVICES_FULL.slice(0, 4).map((s, i) => (
                 <li key={i}>
@@ -1398,7 +1436,7 @@ function Footer() {
           </div>
 
           <div>
-            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-primary mb-4">Contact</p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-accent-light mb-4">Contact</p>
             <ul className="space-y-2.5">
               <li>
                 <a href="tel:+237652370882" className="text-white/65 hover:text-primary transition text-sm">
@@ -1429,8 +1467,8 @@ function Footer() {
         <div className="mt-14 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
           <div className="flex items-center gap-2.5">
             <span className="relative flex h-2 w-2">
-              <span className="absolute inset-0 rounded-full bg-emerald-400 animate-ping" />
-              <span className="relative h-2 w-2 rounded-full bg-emerald-400" />
+              <span className="absolute inset-0 rounded-full bg-accent-light animate-ping" />
+              <span className="relative h-2 w-2 rounded-full bg-accent-light" />
             </span>
             <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-white/60">
               Currently Building · Open For New Projects

@@ -13,7 +13,7 @@ export default function PrivacyPolicy() {
 
         <div className="flex items-center gap-3 mb-8">
           <Logo className="h-11 w-11" />
-          <span className="font-display font-bold text-lg text-ink">SMART Architecture</span>
+          <span className="font-display font-black text-lg text-accent-dark">SMART Architecture</span>
         </div>
 
         <h1 className="font-display font-extrabold text-4xl sm:text-5xl text-ink tracking-tight mb-4">
