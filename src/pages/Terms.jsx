@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
+import Logo from '../components/Logo.jsx'
 
 export default function Terms() {
   return (
@@ -10,10 +11,8 @@ export default function Terms() {
           Back to home
         </Link>
 
-        <div className="flex items-center gap-2.5 mb-8">
-          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-sm overflow-hidden shrink-0">
-            <img src="/logo.png" alt="SMART Architecture & Construction Co. Ltd logo" className="h-full w-full object-cover" />
-          </span>
+        <div className="flex items-center gap-3 mb-8">
+          <Logo className="h-11 w-11" />
           <span className="font-display font-bold text-lg text-ink">SMART Architecture</span>
         </div>
 

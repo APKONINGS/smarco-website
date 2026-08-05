@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import Logo from './components/Logo.jsx'
 import {
   Phone,
   Mail,
@@ -85,19 +86,13 @@ function Navbar() {
   return (
     <>
       <nav
-        className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 transition-all duration-500 ${
-          scrolled ? 'glass shadow-lg shadow-primary/10' : 'bg-transparent'
-        } rounded-full px-4 sm:px-6 py-2.5 w-[calc(100%-2rem)] max-w-5xl`}
+        className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 transition-all duration-500 ease-premium ${
+          scrolled ? 'glass shadow-xl shadow-ink/10' : 'bg-transparent'
+        } rounded-full px-5 sm:px-7 py-3 w-[calc(100%-2rem)] max-w-5xl`}
       >
         <div className="flex items-center justify-between gap-6">
-          <a href="#home" className="flex items-center gap-2.5 group">
-            <span className="flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-white shadow-sm overflow-hidden shrink-0 transition-transform group-hover:scale-105">
-              <img
-                src="/logo.png"
-                alt="SMART Architecture & Construction Co. Ltd logo"
-                className="h-full w-full object-cover"
-              />
-            </span>
+          <a href="#home" className="flex items-center gap-3 group">
+            <Logo className="h-[46px] w-[46px] sm:h-[50px] sm:w-[50px] transition-transform group-hover:scale-105" />
             <span
               className={`font-display font-bold tracking-tight text-lg leading-tight ${
                 scrolled ? 'text-ink' : 'text-white'
@@ -107,7 +102,7 @@ function Navbar() {
             </span>
           </a>
 
-          <div className="hidden lg:flex items-center gap-7">
+          <div className="hidden lg:flex items-center gap-8">
             {NAV_LINKS.map((link) => (
               <a
                 key={link.href}
@@ -123,7 +118,7 @@ function Navbar() {
 
           <a
             href="#contact"
-            className="hidden lg:inline-flex magnetic-btn items-center gap-1.5 bg-primary text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg shadow-primary/30"
+            className="hidden lg:inline-flex btn-primary gap-1.5 px-4 py-2 text-sm"
           >
             Get a quote
             <ArrowUpRight className="h-4 w-4" strokeWidth={2.5} />
@@ -153,9 +148,7 @@ function Navbar() {
         >
           <div className="flex items-center justify-between mb-10">
             <div className="flex items-center gap-2.5">
-              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-sm overflow-hidden shrink-0">
-                <img src="/logo.png" alt="SMART Architecture & Construction Co. Ltd logo" className="h-full w-full object-cover" />
-              </span>
+              <Logo className="h-10 w-10" />
               <span className="font-display font-bold text-xl text-ink">SMART Architecture</span>
             </div>
             <button onClick={() => setOpen(false)} className="p-2 rounded-full bg-divider/40" aria-label="Close menu">
@@ -177,7 +170,7 @@ function Navbar() {
           <a
             href="#contact"
             onClick={() => setOpen(false)}
-            className="mt-8 magnetic-btn flex items-center justify-center gap-2 bg-primary text-white px-6 py-4 rounded-full font-semibold w-full"
+            className="mt-8 btn-primary px-6 py-4 w-full"
           >
             Get a quote
             <ArrowUpRight className="h-4 w-4" />
@@ -241,10 +234,13 @@ function Hero() {
               We Transform Your Dreams
             </span>
             <span
-              className="hero-line-2 block font-serif italic font-medium text-primary-light text-6xl sm:text-7xl md:text-8xl lg:text-9xl mt-2"
+              className="hero-line-2 block font-serif italic font-black text-6xl sm:text-7xl md:text-8xl lg:text-9xl mt-2"
               style={{ lineHeight: '0.92' }}
             >
-              To Reality.
+              <span className="text-accent-light">TO</span>{' '}
+              <span className="bg-gradient-to-r from-primary-light via-white to-primary-light bg-clip-text text-transparent">
+                REALITY.
+              </span>
             </span>
           </h1>
 
@@ -257,16 +253,16 @@ function Hero() {
           <div className="hero-cta mt-10 flex flex-col sm:flex-row gap-4 justify-center">
             <a
               href="#contact"
-              className="magnetic-btn group inline-flex items-center justify-center gap-2 bg-primary text-white font-semibold px-7 py-4 rounded-full shadow-2xl shadow-primary/40"
+              className="btn-primary group shadow-2xl shadow-primary/40 px-7 py-4"
             >
               Get a Free Consultation
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </a>
             <a
               href="tel:+237652370882"
-              className="lift-on-hover inline-flex items-center justify-center gap-2 bg-white/10 backdrop-blur-md text-white border border-white/20 font-medium px-7 py-4 rounded-full"
+              className="btn-glass px-7 py-4"
             >
-              <Phone className="h-4 w-4" />
+              <Phone className="h-4 w-4 text-accent-light" />
               +237 652 370 882
             </a>
           </div>
@@ -342,7 +338,7 @@ function ArchitectureShuffler() {
                 <span
                   key={idx}
                   className="h-1 w-1 rounded-full"
-                  style={{ background: idx < 24 - offset * 6 ? '#0000A2' : '#E2E8F0' }}
+                  style={{ background: idx < 24 - offset * 6 ? '#2563EB' : '#E2E8F0' }}
                 />
               ))}
             </div>
@@ -446,7 +442,7 @@ function SiteWatch() {
               width: `${d.size}px`,
               height: `${d.size}px`,
               animation: `rain-fall ${d.dur} cubic-bezier(0.55,0.05,0.7,0.45) ${d.delay} infinite`,
-              filter: 'drop-shadow(0 1px 2px rgba(0,121,15,0.35))',
+              filter: 'drop-shadow(0 1px 2px rgba(21,128,61,0.35))',
               transform: 'translateX(-50%)',
             }}
             viewBox="0 0 24 24"
@@ -454,8 +450,8 @@ function SiteWatch() {
             <defs>
               <radialGradient id={`spark-${i}`} cx="50%" cy="35%">
                 <stop offset="0%" stopColor="#FFFFFF" />
-                <stop offset="40%" stopColor="#009C17" />
-                <stop offset="100%" stopColor="#00790F" />
+                <stop offset="40%" stopColor="#16A34A" />
+                <stop offset="100%" stopColor="#15803D" />
               </radialGradient>
             </defs>
             <path
@@ -1121,7 +1117,7 @@ function TrustSignals() {
         <div className="text-center">
           <a
             href="#contact"
-            className="magnetic-btn inline-flex items-center gap-2 bg-primary text-white font-semibold px-7 py-3.5 rounded-full shadow-xl shadow-primary/30"
+            className="btn-primary shadow-xl shadow-primary/30 px-7 py-3.5"
           >
             Get a Free Consultation
             <ArrowRight className="h-4 w-4" />
@@ -1308,7 +1304,7 @@ function ContactForm() {
                     <button
                       type="submit"
                       disabled={status === 'sending'}
-                      className="magnetic-btn inline-flex items-center gap-2 bg-primary text-white font-semibold px-7 py-3.5 rounded-full shadow-lg shadow-primary/30 disabled:opacity-50"
+                      className="btn-primary px-7 py-3.5 disabled:opacity-50"
                     >
                       {status === 'sending' ? 'Sending...' : 'Send Inquiry'}
                       <ArrowRight className="h-4 w-4" />
@@ -1355,7 +1351,7 @@ function Footer() {
             </p>
             <a
               href="#contact"
-              className="magnetic-btn inline-flex items-center gap-2 bg-primary text-white font-semibold px-7 py-3.5 rounded-full self-start sm:self-auto"
+              className="btn-primary px-7 py-3.5 self-start sm:self-auto"
             >
               Get a Free Consultation
               <ArrowRight className="h-4 w-4" />
@@ -1365,10 +1361,8 @@ function Footer() {
 
         <div className="grid grid-cols-2 lg:grid-cols-5 gap-10">
           <div className="col-span-2">
-            <div className="flex items-center gap-2.5 mb-4">
-              <span className="flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-sm overflow-hidden shrink-0">
-                <img src="/logo.png" alt="SMART Architecture & Construction Co. Ltd logo" className="h-full w-full object-cover" />
-              </span>
+            <div className="flex items-center gap-3 mb-4">
+              <Logo className="h-14 w-14" />
               <span className="font-display font-bold text-lg">SMART Architecture</span>
             </div>
             <p className="text-white/50 text-sm leading-relaxed max-w-xs">

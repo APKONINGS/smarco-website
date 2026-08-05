@@ -4,17 +4,18 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: '#0000A2',
-        'primary-dark': '#00006E',
-        'primary-light': '#4A4AD6',
-        accent: '#009C17',
-        'accent-dark': '#00790F',
+        primary: '#2563EB',
+        'primary-dark': '#1D4ED8',
+        'primary-light': '#60A5FA',
+        accent: '#16A34A',
+        'accent-dark': '#15803D',
+        'accent-light': '#4ADE80',
         background: '#F8FAFC',
         surface: '#FFFFFF',
         ink: '#0F172A',
         muted: '#64748B',
         divider: '#E2E8F0',
-        deep: '#020617',
+        deep: '#0F172A',
       },
       fontFamily: {
         display: ['"Poppins"', 'system-ui', 'sans-serif'],
@@ -28,6 +29,13 @@ export default {
         '5xl': '2.5rem',
         '6xl': '3rem',
         '7xl': '4rem',
+      },
+      boxShadow: {
+        'glow-primary': '0 10px 30px -8px rgba(37,99,235,0.55)',
+        'glow-accent': '0 10px 26px -8px rgba(22,163,74,0.5)',
+      },
+      transitionTimingFunction: {
+        premium: 'cubic-bezier(0.25,0.46,0.45,0.94)',
       },
       animation: {
         'pulse-slow': 'pulse 3s ease-in-out infinite',
