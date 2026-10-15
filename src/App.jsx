@@ -1,8 +1,10 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Logo from './components/Logo.jsx'
+import Seo from './components/Seo.jsx'
+import { FORM_ENDPOINT, whatsappLink } from './site.js'
 import {
   Phone,
   Mail,
@@ -22,6 +24,8 @@ import {
   Menu,
   X,
   Upload,
+  MessageCircle,
+  ChevronDown,
 } from 'lucide-react'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -33,6 +37,7 @@ const NAV_LINKS = [
   { label: 'Home', href: '#home' },
   { label: 'Services', href: '#services' },
   { label: 'Philosophy', href: '#philosophy' },
+  { label: 'Projects', href: '#projects' },
   { label: 'Process', href: '#process' },
   { label: 'Contact', href: '#contact' },
 ]
@@ -207,7 +212,12 @@ function Hero() {
     <section id="home" ref={heroRef} className="relative min-h-[100dvh] w-full overflow-hidden">
       <div className="absolute inset-0">
         <img
-          src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=2400&q=80"
+          src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1600&q=75"
+          srcSet={[800, 1200, 1600, 2400]
+            .map((w) => `https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=${w}&q=75 ${w}w`)
+            .join(', ')}
+          sizes="100vw"
+          fetchPriority="high"
           alt="Modern architectural building facade"
           className="w-full h-full object-cover"
         />
@@ -895,6 +905,110 @@ function Pillars() {
 }
 
 /* ----------------------------------------------------------------
+   Projects — portfolio grid
+---------------------------------------------------------------- */
+// PLACEHOLDER CONTENT: replace every entry with a real SMARCO project before launch.
+// `image` is a path in /public (e.g. '/projects/molyko-residence.jpg') or null for the blueprint tile.
+const PROJECTS = [
+  { title: 'Private Residence', category: 'Residential', location: 'Buea', year: '2025', scope: 'Architectural design & construction', image: null },
+  { title: 'Commercial Building', category: 'Commercial', location: 'Limbe', year: '2024', scope: 'Structural design & site supervision', image: null },
+  { title: 'School Classroom Block', category: 'Institutional', location: 'Southwest Region', year: '2024', scope: 'Design, BoQ & construction management', image: null },
+  { title: 'Road & Drainage Works', category: 'Infrastructure', location: 'Fako Division', year: '2023', scope: 'Road design & drainage construction', image: null },
+  { title: 'Duplex Renovation', category: 'Residential', location: 'Buea', year: '2023', scope: 'Renovation & interior fit-out', image: null },
+  { title: 'Church Hall', category: 'Institutional', location: 'Kumba', year: '2022', scope: 'Architecture & structural engineering', image: null },
+]
+
+const PROJECT_FILTERS = ['All', ...new Set(PROJECTS.map((p) => p.category))]
+
+function Projects() {
+  const ref = useRef(null)
+  const [filter, setFilter] = useState('All')
+  const shown = filter === 'All' ? PROJECTS : PROJECTS.filter((p) => p.category === filter)
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from('.project-card', {
+        scrollTrigger: { trigger: ref.current, start: 'top 85%', once: true },
+        y: 30,
+        opacity: 0,
+        duration: 0.7,
+        ease: 'power3.out',
+        stagger: 0.08,
+      })
+    }, ref)
+    return () => ctx.revert()
+  }, [])
+
+  return (
+    <section id="projects" ref={ref} className="relative py-24 sm:py-32 px-6 sm:px-10 lg:px-16">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-12">
+          <div>
+            <span className="font-mono text-xs uppercase tracking-[0.25em] text-accent-dark">╱ Selected work</span>
+            <h2 className="font-display font-extrabold text-4xl sm:text-5xl md:text-6xl text-ink mt-4 leading-[1.05] tracking-tight">
+              Built, not just
+              <span className="block font-serif italic font-medium text-accent-dark">drawn.</span>
+            </h2>
+          </div>
+          <div className="flex flex-wrap gap-2" role="group" aria-label="Filter projects by category">
+            {PROJECT_FILTERS.map((f) => (
+              <button
+                key={f}
+                type="button"
+                onClick={() => setFilter(f)}
+                aria-pressed={filter === f}
+                className={`px-4 py-2 rounded-full text-sm font-medium border transition-colors ${
+                  filter === f
+                    ? 'bg-accent-dark text-white border-accent-dark'
+                    : 'bg-surface text-ink/70 border-divider hover:border-accent/50'
+                }`}
+              >
+                {f}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {shown.map((p) => (
+            <article
+              key={p.title}
+              className="project-card group bg-surface border border-divider rounded-4xl overflow-hidden shadow-sm hover:shadow-xl hover:shadow-primary/5 transition-shadow duration-500"
+            >
+              <div className="relative aspect-[4/3] overflow-hidden bg-deep">
+                {p.image ? (
+                  <img
+                    src={p.image}
+                    alt={`${p.title} in ${p.location} by SMART Architecture & Construction`}
+                    loading="lazy"
+                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  />
+                ) : (
+                  <div className="absolute inset-0 grid-bg opacity-40 flex items-center justify-center" aria-hidden="true">
+                    <Building2 className="h-14 w-14 text-primary-light/40" strokeWidth={1.2} />
+                  </div>
+                )}
+                <span className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-ink">
+                  {p.category}
+                </span>
+              </div>
+              <div className="p-6">
+                <h3 className="font-display font-bold text-xl text-ink">{p.title}</h3>
+                <p className="flex items-center gap-1.5 text-muted text-sm mt-1.5">
+                  <MapPin className="h-3.5 w-3.5 text-accent-dark" />
+                  {p.location} · {p.year}
+                </p>
+                <p className="text-ink/70 text-sm mt-4 pt-4 border-t border-divider">{p.scope}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ----------------------------------------------------------------
    Protocol — Sticky Stacking Cards
 ---------------------------------------------------------------- */
 function Protocol() {
@@ -1168,34 +1282,129 @@ function TrustSignals() {
 /* ----------------------------------------------------------------
    Contact Form
 ---------------------------------------------------------------- */
+const PROJECT_TYPES = [
+  'New building',
+  'Renovation / extension',
+  'Architectural drawings only',
+  'Structural / civil engineering',
+  'Road & infrastructure',
+  'Cost estimate / BoQ',
+  'Other',
+]
+const BUDGETS = ['Under 10M FCFA', '10M – 50M FCFA', '50M – 150M FCFA', 'Over 150M FCFA', 'Not sure yet']
+const TIMELINES = ['As soon as possible', 'Within 3 months', '3 – 6 months', '6+ months', 'Just exploring']
+
+const inputClass =
+  'w-full bg-background border border-divider rounded-2xl px-4 py-3.5 text-ink placeholder-muted/60 focus:border-primary focus:ring-4 focus:ring-primary/15 outline-none transition font-body'
+
+function FieldLabel({ htmlFor, label, required }) {
+  return (
+    <label htmlFor={htmlFor} className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted mb-2 block">
+      {label} {required && '*'}
+    </label>
+  )
+}
+
 function Field({ label, type = 'text', required, value, onChange }) {
+  const id = useId()
   return (
     <div>
-      <label className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted mb-2 block">
-        {label} {required && '*'}
-      </label>
+      <FieldLabel htmlFor={id} label={label} required={required} />
       <input
+        id={id}
         type={type}
         required={required}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full bg-background border border-divider rounded-2xl px-4 py-3.5 text-ink placeholder-muted/60 focus:border-primary focus:ring-4 focus:ring-primary/15 outline-none transition font-body"
+        className={inputClass}
       />
     </div>
   )
 }
 
+function SelectField({ label, options, required, value, onChange }) {
+  const id = useId()
+  return (
+    <div>
+      <FieldLabel htmlFor={id} label={label} required={required} />
+      <div className="relative">
+        <select
+          id={id}
+          required={required}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className={`${inputClass} appearance-none pr-10 ${value ? '' : 'text-muted'}`}
+        >
+          <option value="">Select…</option>
+          {options.map((o) => (
+            <option key={o} value={o} className="text-ink">
+              {o}
+            </option>
+          ))}
+        </select>
+        <ChevronDown className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted" />
+      </div>
+    </div>
+  )
+}
+
+function enquiryText(form) {
+  return [
+    'Hello SMART Architecture, I would like a quote.',
+    '',
+    `Name: ${form.name}`,
+    `Email: ${form.email}`,
+    form.phone ? `Phone: ${form.phone}` : null,
+    `Project type: ${form.projectType}`,
+    form.location ? `Location: ${form.location}` : null,
+    form.budget ? `Budget: ${form.budget}` : null,
+    form.timeline ? `Timeline: ${form.timeline}` : null,
+    '',
+    form.message,
+  ]
+    .filter((line) => line !== null)
+    .join('\n')
+}
+
 function ContactForm() {
-  const [form, setForm] = useState({ name: '', email: '', phone: '', location: '', message: '' })
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    location: '',
+    projectType: '',
+    budget: '',
+    timeline: '',
+    message: '',
+  })
   const [files, setFiles] = useState([])
+  // idle | sending | sent | whatsapp | error
   const [status, setStatus] = useState('idle')
   const dropRef = useRef(null)
+  const set = (key) => (v) => setForm((f) => ({ ...f, [key]: v }))
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!form.name || !form.email || !form.message) return
+    if (!form.name || !form.email || !form.projectType || !form.message) return
+
+    if (!FORM_ENDPOINT) {
+      // No form service configured yet: hand the enquiry over to WhatsApp, pre-filled.
+      window.open(whatsappLink(enquiryText(form)), '_blank', 'noopener')
+      setStatus('whatsapp')
+      return
+    }
+
     setStatus('sending')
-    setTimeout(() => setStatus('sent'), 1200)
+    const data = new FormData()
+    Object.entries(form).forEach(([k, v]) => data.append(k, v))
+    data.append('_subject', `New quote request: ${form.projectType} — ${form.name}`)
+    files.forEach((f) => data.append('photos', f))
+    try {
+      const res = await fetch(FORM_ENDPOINT, { method: 'POST', body: data, headers: { Accept: 'application/json' } })
+      setStatus(res.ok ? 'sent' : 'error')
+    } catch {
+      setStatus('error')
+    }
   }
 
   const handleFiles = (newFiles) => {
@@ -1247,6 +1456,16 @@ function ContactForm() {
                 </span>
               </a>
 
+              <a href={whatsappLink()} target="_blank" rel="noopener noreferrer" className="lift-on-hover flex items-center gap-4 group">
+                <span className="h-12 w-12 rounded-2xl bg-accent/10 border border-accent/20 flex items-center justify-center group-hover:bg-accent transition">
+                  <MessageCircle className="h-5 w-5 text-accent-dark group-hover:text-white" />
+                </span>
+                <span>
+                  <span className="block font-mono text-[10px] uppercase tracking-widest text-muted">Chat on WhatsApp</span>
+                  <span className="font-display font-semibold text-ink text-lg">Message us directly</span>
+                </span>
+              </a>
+
               <a href="mailto:ebuafield@gmail.com" className="lift-on-hover flex items-center gap-4 group">
                 <span className="h-12 w-12 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center group-hover:bg-primary transition">
                   <Mail className="h-5 w-5 text-primary group-hover:text-white" />
@@ -1281,30 +1500,34 @@ function ContactForm() {
 
           <div className="lg:col-span-7">
             <form onSubmit={handleSubmit} className="bg-surface border border-divider rounded-5xl p-7 sm:p-10 shadow-xl shadow-primary/5">
-              {status !== 'sent' ? (
+              {status !== 'sent' && status !== 'whatsapp' ? (
                 <>
                   <div className="grid sm:grid-cols-2 gap-5">
-                    <Field label="Name" required value={form.name} onChange={(v) => setForm({ ...form, name: v })} />
-                    <Field label="Email address" type="email" required value={form.email} onChange={(v) => setForm({ ...form, email: v })} />
-                    <Field label="Phone number" type="tel" value={form.phone} onChange={(v) => setForm({ ...form, phone: v })} />
-                    <Field label="Project location" value={form.location} onChange={(v) => setForm({ ...form, location: v })} />
+                    <Field label="Name" required value={form.name} onChange={set('name')} />
+                    <Field label="Email address" type="email" required value={form.email} onChange={set('email')} />
+                    <Field label="Phone / WhatsApp" type="tel" value={form.phone} onChange={set('phone')} />
+                    <Field label="Project location" value={form.location} onChange={set('location')} />
+                    <SelectField label="Project type" required options={PROJECT_TYPES} value={form.projectType} onChange={set('projectType')} />
+                    <SelectField label="Estimated budget" options={BUDGETS} value={form.budget} onChange={set('budget')} />
+                    <div className="sm:col-span-2">
+                      <SelectField label="When do you want to start?" options={TIMELINES} value={form.timeline} onChange={set('timeline')} />
+                    </div>
                   </div>
 
                   <div className="mt-5">
-                    <label className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted mb-2 block">
-                      Your message *
-                    </label>
+                    <FieldLabel htmlFor="enquiry-message" label="Your message" required />
                     <textarea
+                      id="enquiry-message"
                       value={form.message}
-                      onChange={(e) => setForm({ ...form, message: e.target.value })}
+                      onChange={(e) => set('message')(e.target.value)}
                       required
                       rows={5}
-                      placeholder="Briefly describe your project and what you need..."
-                      className="w-full bg-background border border-divider rounded-2xl px-4 py-3.5 text-ink placeholder-muted/60 focus:border-primary focus:ring-4 focus:ring-primary/15 outline-none transition resize-none font-body"
+                      placeholder="Briefly describe your project: size, number of floors, whether you have land or plans already..."
+                      className={`${inputClass} resize-none`}
                     />
                   </div>
 
-                  <div
+                  {FORM_ENDPOINT && <div
                     ref={dropRef}
                     onDragOver={(e) => {
                       e.preventDefault()
@@ -1334,16 +1557,30 @@ function ContactForm() {
                         </div>
                       )}
                     </label>
-                  </div>
+                  </div>}
+
+                  {status === 'error' && (
+                    <p role="alert" className="mt-5 text-sm text-red-700 bg-red-50 border border-red-200 rounded-2xl px-4 py-3">
+                      Your enquiry couldn&apos;t be sent. Please try again, or{' '}
+                      <a href={whatsappLink(enquiryText(form))} target="_blank" rel="noopener noreferrer" className="font-semibold underline">
+                        send it on WhatsApp
+                      </a>{' '}
+                      instead.
+                    </p>
+                  )}
 
                   <div className="mt-7 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                    <p className="text-xs text-muted">We contact you as soon as possible. Fields marked * are required.</p>
+                    <p className="text-xs text-muted">
+                      {FORM_ENDPOINT
+                        ? 'We contact you as soon as possible. Fields marked * are required.'
+                        : 'Your enquiry opens in WhatsApp, ready to send. Fields marked * are required.'}
+                    </p>
                     <button
                       type="submit"
                       disabled={status === 'sending'}
                       className="btn-primary px-7 py-3.5 disabled:opacity-50"
                     >
-                      {status === 'sending' ? 'Sending...' : 'Send Inquiry'}
+                      {status === 'sending' ? 'Sending...' : FORM_ENDPOINT ? 'Send Inquiry' : 'Send via WhatsApp'}
                       <ArrowRight className="h-4 w-4" />
                     </button>
                   </div>
@@ -1353,10 +1590,29 @@ function ContactForm() {
                   <div className="h-16 w-16 mx-auto rounded-full bg-accent/15 flex items-center justify-center mb-6">
                     <CheckCircle2 className="h-8 w-8 text-accent-dark" />
                   </div>
-                  <h3 className="font-display font-bold text-2xl text-ink mb-3">Thank you for reaching out</h3>
-                  <p className="text-muted max-w-md mx-auto">
-                    We&apos;ll get back to you shortly to discuss your project.
-                  </p>
+                  {status === 'sent' ? (
+                    <>
+                      <h3 className="font-display font-bold text-2xl text-ink mb-3">Thank you for reaching out</h3>
+                      <p className="text-muted max-w-md mx-auto">
+                        We&apos;ll get back to you shortly to discuss your project.
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <h3 className="font-display font-bold text-2xl text-ink mb-3">Almost done: press send in WhatsApp</h3>
+                      <p className="text-muted max-w-md mx-auto">
+                        Your enquiry is ready in WhatsApp. Feel free to attach site photos or plans in the chat.
+                      </p>
+                      <a
+                        href={whatsappLink(enquiryText(form))}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn-primary px-6 py-3 mt-6"
+                      >
+                        WhatsApp didn&apos;t open? Tap here
+                      </a>
+                    </>
+                  )}
                 </div>
               )}
             </form>
@@ -1430,6 +1686,7 @@ function Footer() {
             <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-primary mb-4">Company</p>
             <ul className="space-y-2.5">
               <li><a href="#philosophy" className="text-white/65 hover:text-primary transition text-sm">Philosophy</a></li>
+              <li><a href="#projects" className="text-white/65 hover:text-primary transition text-sm">Projects</a></li>
               <li><a href="#process" className="text-white/65 hover:text-primary transition text-sm">Process</a></li>
               <li><a href="#contact" className="text-white/65 hover:text-primary transition text-sm">Contact</a></li>
             </ul>
@@ -1451,6 +1708,11 @@ function Footer() {
               <li>
                 <a href="tel:+237677915878" className="text-white/65 hover:text-primary transition text-sm">
                   +237 677 915 878
+                </a>
+              </li>
+              <li>
+                <a href={whatsappLink()} target="_blank" rel="noopener noreferrer" className="text-white/65 hover:text-primary transition text-sm">
+                  WhatsApp us
                 </a>
               </li>
               <li>
@@ -1487,6 +1749,24 @@ function Footer() {
 }
 
 /* ----------------------------------------------------------------
+   Floating WhatsApp button
+---------------------------------------------------------------- */
+function WhatsAppButton() {
+  return (
+    <a
+      href={whatsappLink('Hello SMART Architecture, I would like to discuss a project.')}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Chat with us on WhatsApp"
+      className="fixed bottom-5 right-5 sm:bottom-7 sm:right-7 z-40 flex items-center gap-2 rounded-full bg-[#25D366] text-white shadow-xl shadow-black/20 pl-4 pr-5 py-3.5 hover:brightness-105 hover:-translate-y-0.5 transition"
+    >
+      <MessageCircle className="h-5 w-5" strokeWidth={2.2} />
+      <span className="hidden sm:inline font-semibold text-sm">WhatsApp</span>
+    </a>
+  )
+}
+
+/* ----------------------------------------------------------------
    App
 ---------------------------------------------------------------- */
 export default function App() {
@@ -1501,18 +1781,21 @@ export default function App() {
 
   return (
     <div className="relative">
+      <Seo path="/" />
       <div className="noise-overlay" />
       <Navbar />
       <main>
         <Hero />
         <Features />
         <Pillars />
+        <Projects />
         <Protocol />
         <ServicesGrid />
         <TrustSignals />
         <ContactForm />
       </main>
       <Footer />
+      <WhatsAppButton />
     </div>
   )
 }

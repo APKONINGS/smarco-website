@@ -1,10 +1,12 @@
 import { Link } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
 import Logo from '../components/Logo.jsx'
+import Seo from '../components/Seo.jsx'
 
 export default function PrivacyPolicy() {
   return (
     <div className="relative min-h-screen bg-background">
+      <Seo title="Privacy Policy | SMART Architecture & Construction" path="/privacy" />
       <div className="max-w-3xl mx-auto px-6 sm:px-10 py-16 sm:py-24">
         <Link to="/" className="inline-flex items-center gap-2 text-sm font-medium text-primary-dark lift-on-hover mb-10">
           <ArrowLeft className="h-4 w-4" />
