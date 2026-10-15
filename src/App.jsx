@@ -4,6 +4,8 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Logo from './components/Logo.jsx'
 import Seo from './components/Seo.jsx'
+import LangToggle from './components/LangToggle.jsx'
+import { useLang } from './i18n.js'
 import { FORM_ENDPOINT, whatsappLink } from './site.js'
 import {
   Phone,
@@ -26,59 +28,26 @@ import {
   Upload,
   MessageCircle,
   ChevronDown,
+  Plus,
 } from 'lucide-react'
 
 gsap.registerPlugin(ScrollTrigger)
 
 /* ----------------------------------------------------------------
-   Constants / Content
+   Constants
+   All visible text lives in src/locales/{en,fr}.js; arrays here hold the
+   non-text parts (icons, images, numbers) in the same order.
 ---------------------------------------------------------------- */
-const NAV_LINKS = [
-  { label: 'Home', href: '#home' },
-  { label: 'Services', href: '#services' },
-  { label: 'Philosophy', href: '#philosophy' },
-  { label: 'Projects', href: '#projects' },
-  { label: 'Process', href: '#process' },
-  { label: 'Contact', href: '#contact' },
-]
+const NAV_LINKS = ['home', 'services', 'philosophy', 'projects', 'process', 'contact']
 
-const SERVICES_FULL = [
-  {
-    icon: PenTool,
-    title: 'Architecture & Design',
-    text: 'From concept sketches to fully detailed architectural drawings, we design spaces that balance beauty, function, and buildability.',
-  },
-  {
-    icon: Building2,
-    title: 'Civil & Structural Engineering',
-    text: 'Structural analysis and civil engineering for foundations, frames, and infrastructure built to carry real load for the long term.',
-  },
-  {
-    icon: HardHat,
-    title: 'Construction Management',
-    text: 'End-to-end site management, contractor coordination, and quality control that keeps your project on schedule and on budget.',
-  },
-  {
-    icon: Route,
-    title: 'Road & Infrastructure',
-    text: "Design and construction of roads, drainage, and infrastructure works engineered for Cameroon's terrain and climate.",
-  },
-  {
-    icon: Hammer,
-    title: 'Renovation & Interior Fit-Out',
-    text: 'Transforming existing structures and interiors through renovation, remodeling, and finishing that renew value and purpose.',
-  },
-  {
-    icon: Calculator,
-    title: 'Quantity Surveying & Consultancy',
-    text: 'Accurate cost estimation, bills of quantities, and building consultancy that protect your budget from first brick to handover.',
-  },
-]
+// Same order as t.services.items
+const SERVICE_ICONS = [PenTool, Building2, HardHat, Route, Hammer, Calculator]
 
 /* ----------------------------------------------------------------
    Navbar
 ---------------------------------------------------------------- */
 function Navbar() {
+  const { t } = useLang()
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
 
@@ -107,35 +76,38 @@ function Navbar() {
             </span>
           </a>
 
-          <div className="hidden lg:flex items-center gap-8">
-            {NAV_LINKS.map((link) => (
+          <div className="hidden lg:flex items-center gap-7">
+            {NAV_LINKS.map((key) => (
               <a
-                key={link.href}
-                href={link.href}
+                key={key}
+                href={`#${key}`}
                 className={`text-sm font-medium tracking-tight lift-on-hover ${
                   scrolled ? 'text-ink/70 hover:text-primary' : 'text-white/90 hover:text-white'
                 } transition-colors`}
               >
-                {link.label}
+                {t.nav.links[key]}
               </a>
             ))}
           </div>
 
-          <a
-            href="#contact"
-            className="hidden lg:inline-flex btn-primary gap-1.5 px-4 py-2 text-sm"
-          >
-            Get a quote
-            <ArrowUpRight className="h-4 w-4" strokeWidth={2.5} />
-          </a>
+          <div className="hidden lg:flex items-center gap-3">
+            <LangToggle tone={scrolled ? 'light' : 'dark'} />
+            <a href="#contact" className="btn-primary gap-1.5 px-4 py-2 text-sm whitespace-nowrap">
+              {t.nav.quote}
+              <ArrowUpRight className="h-4 w-4" strokeWidth={2.5} />
+            </a>
+          </div>
 
-          <button
-            onClick={() => setOpen(true)}
-            className={`lg:hidden p-2 rounded-full ${scrolled ? 'text-ink' : 'text-white'}`}
-            aria-label="Open menu"
-          >
-            <Menu className="h-5 w-5" />
-          </button>
+          <div className="lg:hidden flex items-center gap-2">
+            <LangToggle tone={scrolled ? 'light' : 'dark'} className="hidden sm:inline-flex" />
+            <button
+              onClick={() => setOpen(true)}
+              className={`p-2 rounded-full ${scrolled ? 'text-ink' : 'text-white'}`}
+              aria-label={t.nav.openMenu}
+            >
+              <Menu className="h-5 w-5" />
+            </button>
+          </div>
         </div>
       </nav>
 
@@ -156,19 +128,19 @@ function Navbar() {
               <Logo className="h-10 w-10" />
               <span className="font-display font-black text-xl text-accent-dark">SMART Architecture</span>
             </div>
-            <button onClick={() => setOpen(false)} className="p-2 rounded-full bg-divider/40" aria-label="Close menu">
+            <button onClick={() => setOpen(false)} className="p-2 rounded-full bg-divider/40" aria-label={t.nav.closeMenu}>
               <X className="h-5 w-5" />
             </button>
           </div>
           <div className="flex flex-col gap-1">
-            {NAV_LINKS.map((link) => (
+            {NAV_LINKS.map((key) => (
               <a
-                key={link.href}
-                href={link.href}
+                key={key}
+                href={`#${key}`}
                 onClick={() => setOpen(false)}
                 className="font-display text-3xl font-semibold text-ink py-3 border-b border-divider"
               >
-                {link.label}
+                {t.nav.links[key]}
               </a>
             ))}
           </div>
@@ -177,9 +149,13 @@ function Navbar() {
             onClick={() => setOpen(false)}
             className="mt-8 btn-primary px-6 py-4 w-full"
           >
-            Get a quote
+            {t.nav.quote}
             <ArrowUpRight className="h-4 w-4" />
           </a>
+          <div className="mt-6 flex items-center justify-between">
+            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted">{t.lang.label}</span>
+            <LangToggle onSwitch={() => setOpen(false)} />
+          </div>
         </div>
       </div>
     </>
@@ -190,6 +166,7 @@ function Navbar() {
    Hero
 ---------------------------------------------------------------- */
 function Hero() {
+  const { t } = useLang()
   const heroRef = useRef(null)
 
   useEffect(() => {
@@ -218,7 +195,7 @@ function Hero() {
             .join(', ')}
           sizes="100vw"
           fetchPriority="high"
-          alt="Modern architectural building facade"
+          alt={t.hero.imageAlt}
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-tr from-deep/85 via-deep/50 to-primary/30" />
@@ -238,27 +215,26 @@ function Hero() {
       <div className="relative z-10 flex min-h-[100dvh] flex-col items-center justify-center text-center">
         <div className="px-6 sm:px-10 lg:px-16 max-w-4xl">
           <p className="hero-meta font-mono text-xs uppercase tracking-[0.3em] text-white/70 mb-6">
-            Buea, Cameroon · Architecture &amp; Civil Engineering
+            {t.hero.eyebrow}
           </p>
           <h1 className="font-display font-extrabold text-white leading-[0.95] tracking-tight">
             <span className="hero-line-1 block text-4xl sm:text-5xl md:text-6xl">
-              We Transform Your Dreams
+              {t.hero.line1}
             </span>
             <span
               className="hero-line-2 block font-serif italic font-black text-6xl sm:text-7xl md:text-8xl lg:text-9xl mt-2"
               style={{ lineHeight: '0.92' }}
             >
-              <span className="text-accent-light">TO</span>{' '}
+              <span className="text-accent-light">{t.hero.to}</span>{' '}
               <span className="bg-gradient-to-r from-primary-light via-white to-primary-light bg-clip-text text-transparent">
-                REALITY.
+                {t.hero.reality}
               </span>
             </span>
           </h1>
 
           <p className="hero-meta mx-auto max-w-xl text-white/75 text-base sm:text-lg mt-8 leading-relaxed">
-            A modern engineering consultancy delivering architectural design, civil engineering, and
-            construction management for residential, commercial, institutional, and industrial projects.
-            <span className="text-white"> Precision, durability, and craftsmanship — every time.</span>
+            {t.hero.intro}
+            <span className="text-white"> {t.hero.introStrong}</span>
           </p>
 
           <div className="hero-cta mt-10 flex flex-col sm:flex-row gap-4 justify-center">
@@ -266,7 +242,7 @@ function Hero() {
               href="#contact"
               className="btn-primary group shadow-2xl shadow-primary/40 px-7 py-4"
             >
-              Get a Free Consultation
+              {t.hero.cta}
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </a>
             <a
@@ -279,7 +255,7 @@ function Hero() {
           </div>
 
           <div className="hero-meta mt-12 flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
-            {['10+ Years Experience', '100+ Projects Delivered', 'Licensed Engineers', 'Quality Guaranteed'].map((item) => (
+            {t.hero.badges.map((item) => (
               <span key={item} className="flex items-center gap-2 text-white/70 text-xs sm:text-sm font-medium">
                 <CheckCircle2 className="h-3.5 w-3.5 text-accent-light" />
                 {item}
@@ -289,7 +265,7 @@ function Hero() {
         </div>
 
         <div className="absolute bottom-8 right-6 sm:right-12 hidden md:flex flex-col items-center gap-2 text-white/50">
-          <span className="font-mono uppercase text-[10px] tracking-[0.3em]">Scroll</span>
+          <span className="font-mono uppercase text-[10px] tracking-[0.3em]">{t.hero.scroll}</span>
           <div className="h-8 w-px bg-gradient-to-b from-white/50 to-transparent" />
         </div>
       </div>
@@ -300,22 +276,18 @@ function Hero() {
 /* ----------------------------------------------------------------
    Feature Card 1 — Architecture Shuffler
 ---------------------------------------------------------------- */
+const SHUFFLER_SPECS = ['3D + CAD', 'BIM', '2D + 3D'] // same order as t.shuffler
+
 function ArchitectureShuffler() {
-  const items = [
-    { tag: 'Residential', label: 'Custom home & estate design', spec: '3D + CAD' },
-    { tag: 'Commercial', label: 'Offices, retail & mixed-use', spec: 'BIM' },
-    { tag: 'Institutional', label: 'Schools, churches & hospitals', spec: '2D + 3D' },
-  ]
-  const [stack, setStack] = useState(items)
+  const { t } = useLang()
+  const items = t.shuffler.map((item, i) => ({ ...item, spec: SHUFFLER_SPECS[i] }))
+  const [rotation, setRotation] = useState(0)
+  // Rotate right by one each tick: the last card comes to the front.
+  const n = items.length
+  const stack = items.map((_, i) => items[(((i - rotation) % n) + n) % n])
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setStack((prev) => {
-        const next = [...prev]
-        next.unshift(next.pop())
-        return next
-      })
-    }, 3000)
+    const interval = setInterval(() => setRotation((r) => r + 1), 3000)
     return () => clearInterval(interval)
   }, [])
 
@@ -365,22 +337,21 @@ function ArchitectureShuffler() {
    Re-skinned from the reference "falling drops" pattern: I-beam +
    welding sparks in safety-orange, over a foundation surface line.
 ---------------------------------------------------------------- */
+const SITE_STATUS_TONES = ['primary', 'warning', 'primary', 'accent'] // same order as t.siteWatch.statuses
+const SITE_STATUS_PASSED = 3
+
 function SiteWatch() {
+  const { t } = useLang()
   const [statusIdx, setStatusIdx] = useState(0)
   const [count, setCount] = useState(6)
 
-  const statuses = [
-    { text: 'Surveying · site staked out', label: 'Survey', tone: 'primary' },
-    { text: 'Non-conformance flagged · bay 3', label: 'Flagged', tone: 'warning' },
-    { text: 'Engineer on-site · reviewing', label: 'Review', tone: 'primary' },
-    { text: 'Inspection passed · delivered', label: 'Passed', tone: 'accent' },
-  ]
+  const statuses = t.siteWatch.statuses.map((s, i) => ({ ...s, tone: SITE_STATUS_TONES[i] }))
 
   useEffect(() => {
     const interval = setInterval(() => {
       setStatusIdx((idx) => {
-        const next = (idx + 1) % statuses.length
-        if (statuses[next].label === 'Passed') setCount((c) => c + 1)
+        const next = (idx + 1) % SITE_STATUS_TONES.length
+        if (next === SITE_STATUS_PASSED) setCount((c) => c + 1)
         return next
       })
     }, 2300)
@@ -421,14 +392,14 @@ function SiteWatch() {
         <div className="flex items-center gap-2">
           <HardHat className="h-3.5 w-3.5 text-accent-dark" strokeWidth={2.2} />
           <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-accent-dark">
-            Site Supervision
+            {t.siteWatch.title}
           </span>
         </div>
         <div className="flex items-baseline gap-1">
           <span className="font-display font-bold text-sm text-ink tabular-nums">
             {String(count).padStart(2, '0')}
           </span>
-          <span className="font-mono text-[9px] uppercase tracking-widest text-muted">sites today</span>
+          <span className="font-mono text-[9px] uppercase tracking-widest text-muted">{t.siteWatch.sitesToday}</span>
         </div>
       </div>
 
@@ -545,7 +516,8 @@ function SiteWatch() {
    Feature Card 3 — Project Scheduler (cursor + calendar)
 ---------------------------------------------------------------- */
 function ProjectScheduler() {
-  const days = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
+  const { t } = useLang()
+  const days = t.scheduler.days
   const [step, setStep] = useState(0)
   const activeDay = 2
 
@@ -573,9 +545,9 @@ function ProjectScheduler() {
   return (
     <div className="relative h-44 w-full bg-white border border-divider rounded-3xl p-5 overflow-hidden">
       <div className="flex items-center justify-between mb-3">
-        <span className="font-mono text-[10px] uppercase tracking-widest text-muted">Week 14 · Phase 2</span>
+        <span className="font-mono text-[10px] uppercase tracking-widest text-muted">{t.scheduler.week}</span>
         <span className="font-mono text-[10px] uppercase tracking-widest text-primary-dark bg-primary/10 px-2 py-0.5 rounded-full">
-          Milestone
+          {t.scheduler.milestone}
         </span>
       </div>
 
@@ -600,7 +572,7 @@ function ProjectScheduler() {
           step === 4 ? 'bg-accent text-white scale-[1.02] shadow-md shadow-accent/30' : 'bg-divider/40 text-muted'
         }`}
       >
-        {step >= 3 ? '✓ Milestone confirmed' : 'Select a milestone date'}
+        {step >= 3 ? t.scheduler.confirmed : t.scheduler.select}
       </button>
 
       <div
@@ -619,6 +591,7 @@ function ProjectScheduler() {
    Features Section
 ---------------------------------------------------------------- */
 function Features() {
+  const { t } = useLang()
   const sectionRef = useRef(null)
 
   useEffect(() => {
@@ -643,43 +616,23 @@ function Features() {
     return () => ctx.revert()
   }, [])
 
-  const cards = [
-    {
-      eyebrow: '01 / Design',
-      heading: 'Architectural Design',
-      sub: 'Concept to construction-ready',
-      text: 'From first sketch to fully detailed drawings, we shape spaces that are as functional as they are beautiful — tailored to how you live and work.',
-      Component: ArchitectureShuffler,
-      tone: 'primary',
-    },
-    {
-      eyebrow: '02 / Oversight',
-      heading: 'Site Supervision',
-      sub: 'Daily oversight, zero surprises',
-      text: 'Our engineers supervise every phase on-site — verifying materials, workmanship, and safety so your build meets specification at every stage.',
-      Component: SiteWatch,
-      tone: 'accent',
-    },
-    {
-      eyebrow: '03 / Delivery',
-      heading: 'Project Management',
-      sub: 'On time, on budget',
-      text: 'We plan every milestone — from mobilization to handover — and keep you informed with clear timelines and transparent progress reporting.',
-      Component: ProjectScheduler,
-      tone: 'primary',
-    },
+  const visuals = [
+    { Component: ArchitectureShuffler, tone: 'primary' },
+    { Component: SiteWatch, tone: 'accent' },
+    { Component: ProjectScheduler, tone: 'primary' },
   ]
+  const cards = t.features.cards.map((card, i) => ({ ...card, ...visuals[i] }))
 
   return (
     <section id="services" ref={sectionRef} className="relative py-28 sm:py-40 px-6 sm:px-10 lg:px-16">
       <div className="max-w-7xl mx-auto">
         <div className="feature-heading max-w-3xl mb-16 sm:mb-24">
           <span className="font-mono text-xs uppercase tracking-[0.25em] text-accent-dark">
-            ╱ Our core disciplines
+            {t.features.eyebrow}
           </span>
           <h2 className="font-display font-extrabold text-4xl sm:text-5xl md:text-6xl text-ink mt-4 leading-[1.05] tracking-tight">
-            Three disciplines.
-            <span className="block font-serif italic font-medium text-primary-dark mt-1">One vision.</span>
+            {t.features.title1}
+            <span className="block font-serif italic font-medium text-primary-dark mt-1">{t.features.title2}</span>
           </h2>
         </div>
 
@@ -760,6 +713,7 @@ function CountUp({ target, duration = 1800 }) {
    Pillars — Three core numbers
 ---------------------------------------------------------------- */
 function Pillars() {
+  const { t } = useLang()
   const ref = useRef(null)
   const [visible, setVisible] = useState(false)
 
@@ -779,35 +733,12 @@ function Pillars() {
     return () => observer.disconnect()
   }, [])
 
-  const pillars = [
-    {
-      n: '01',
-      title: 'Experience',
-      target: 10,
-      suffix: '+',
-      label: 'years of practice',
-      desc: 'A decade delivering architecture and civil engineering projects across the Southwest Region and beyond.',
-      tone: 'primary',
-    },
-    {
-      n: '02',
-      title: 'Delivery',
-      target: 100,
-      suffix: '+',
-      label: 'projects completed',
-      desc: 'From private residences to institutional buildings, each project delivered to specification and on schedule.',
-      tone: 'accent',
-    },
-    {
-      n: '03',
-      title: 'Standards',
-      target: 100,
-      suffix: '%',
-      label: 'licensed engineering',
-      desc: 'Every design and site supervision is led by qualified, registered engineers — no shortcuts, no guesswork.',
-      tone: 'primary',
-    },
+  const figures = [
+    { n: '01', target: 10, suffix: '+', tone: 'primary' },
+    { n: '02', target: 100, suffix: '+', tone: 'accent' },
+    { n: '03', target: 100, suffix: '%', tone: 'primary' },
   ]
+  const pillars = t.pillars.items.map((p, i) => ({ ...p, ...figures[i] }))
 
   return (
     <section id="philosophy" ref={ref} className="relative py-28 sm:py-40 px-6 sm:px-10 lg:px-16 overflow-hidden">
@@ -823,17 +754,14 @@ function Pillars() {
         >
           <div className="max-w-2xl">
             <span className="inline-block font-mono text-xs uppercase tracking-[0.3em] text-accent-dark mb-5">
-              ╱ Three pillars
+              {t.pillars.eyebrow}
             </span>
             <h2 className="font-display font-extrabold text-4xl sm:text-5xl md:text-6xl text-ink leading-[1.05] tracking-tight">
-              The numbers behind
-              <span className="block font-serif italic font-medium text-primary-dark">the trust.</span>
+              {t.pillars.title1}
+              <span className="block font-serif italic font-medium text-primary-dark">{t.pillars.title2}</span>
             </h2>
           </div>
-          <p className="text-muted text-lg leading-relaxed max-w-md lg:text-right">
-            Three figures that define how we work. Not marketing — simply what Engr. Ebua Fidelis Mvo and
-            our team deliver on every site.
-          </p>
+          <p className="text-muted text-lg leading-relaxed max-w-md lg:text-right">{t.pillars.intro}</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-divider rounded-5xl overflow-hidden border border-divider shadow-xl shadow-primary/5">
@@ -908,22 +836,26 @@ function Pillars() {
    Projects — portfolio grid
 ---------------------------------------------------------------- */
 // PLACEHOLDER CONTENT: replace every entry with a real SMARCO project before launch.
+// Title, location and scope text live in t.projects.items (same order) in both locale files.
 // `image` is a path in /public (e.g. '/projects/molyko-residence.jpg') or null for the blueprint tile.
 const PROJECTS = [
-  { title: 'Private Residence', category: 'Residential', location: 'Buea', year: '2025', scope: 'Architectural design & construction', image: null },
-  { title: 'Commercial Building', category: 'Commercial', location: 'Limbe', year: '2024', scope: 'Structural design & site supervision', image: null },
-  { title: 'School Classroom Block', category: 'Institutional', location: 'Southwest Region', year: '2024', scope: 'Design, BoQ & construction management', image: null },
-  { title: 'Road & Drainage Works', category: 'Infrastructure', location: 'Fako Division', year: '2023', scope: 'Road design & drainage construction', image: null },
-  { title: 'Duplex Renovation', category: 'Residential', location: 'Buea', year: '2023', scope: 'Renovation & interior fit-out', image: null },
-  { title: 'Church Hall', category: 'Institutional', location: 'Kumba', year: '2022', scope: 'Architecture & structural engineering', image: null },
+  { category: 'residential', year: '2025', image: null },
+  { category: 'commercial', year: '2024', image: null },
+  { category: 'institutional', year: '2024', image: null },
+  { category: 'infrastructure', year: '2023', image: null },
+  { category: 'residential', year: '2023', image: null },
+  { category: 'institutional', year: '2022', image: null },
 ]
 
-const PROJECT_FILTERS = ['All', ...new Set(PROJECTS.map((p) => p.category))]
+const PROJECT_FILTERS = ['all', ...new Set(PROJECTS.map((p) => p.category))]
 
 function Projects() {
+  const { t } = useLang()
   const ref = useRef(null)
-  const [filter, setFilter] = useState('All')
-  const shown = filter === 'All' ? PROJECTS : PROJECTS.filter((p) => p.category === filter)
+  const [filter, setFilter] = useState('all')
+  const projects = PROJECTS.map((p, i) => ({ ...p, ...t.projects.items[i] }))
+  const shown = filter === 'all' ? projects : projects.filter((p) => p.category === filter)
+  const filterLabel = (f) => (f === 'all' ? t.projects.all : t.projects.categories[f])
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -944,13 +876,13 @@ function Projects() {
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-12">
           <div>
-            <span className="font-mono text-xs uppercase tracking-[0.25em] text-accent-dark">╱ Selected work</span>
+            <span className="font-mono text-xs uppercase tracking-[0.25em] text-accent-dark">{t.projects.eyebrow}</span>
             <h2 className="font-display font-extrabold text-4xl sm:text-5xl md:text-6xl text-ink mt-4 leading-[1.05] tracking-tight">
-              Built, not just
-              <span className="block font-serif italic font-medium text-accent-dark">drawn.</span>
+              {t.projects.title1}
+              <span className="block font-serif italic font-medium text-accent-dark">{t.projects.title2}</span>
             </h2>
           </div>
-          <div className="flex flex-wrap gap-2" role="group" aria-label="Filter projects by category">
+          <div className="flex flex-wrap gap-2" role="group" aria-label={t.projects.filterLabel}>
             {PROJECT_FILTERS.map((f) => (
               <button
                 key={f}
@@ -963,7 +895,7 @@ function Projects() {
                     : 'bg-surface text-ink/70 border-divider hover:border-accent/50'
                 }`}
               >
-                {f}
+                {filterLabel(f)}
               </button>
             ))}
           </div>
@@ -979,7 +911,7 @@ function Projects() {
                 {p.image ? (
                   <img
                     src={p.image}
-                    alt={`${p.title} in ${p.location} by SMART Architecture & Construction`}
+                    alt={t.projects.imageAlt(p.title, p.location)}
                     loading="lazy"
                     className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
@@ -989,7 +921,7 @@ function Projects() {
                   </div>
                 )}
                 <span className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-ink">
-                  {p.category}
+                  {t.projects.categories[p.category]}
                 </span>
               </div>
               <div className="p-6">
@@ -1012,6 +944,7 @@ function Projects() {
    Protocol — Sticky Stacking Cards
 ---------------------------------------------------------------- */
 function Protocol() {
+  const { t } = useLang()
   const containerRef = useRef(null)
 
   useEffect(() => {
@@ -1037,43 +970,24 @@ function Protocol() {
     return () => ctx.revert()
   }, [])
 
-  const steps = [
-    {
-      num: '01',
-      title: 'Consultation & Survey',
-      tagline: 'We listen, then we assess.',
-      text: 'We meet to understand your vision, budget, and site — followed by a full site survey and feasibility assessment before a single line is drawn.',
-      image: 'https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=1200&q=80',
-      alt: 'Engineers reviewing architectural plans',
-      meta: 'Step 1 / Listen',
-    },
-    {
-      num: '02',
-      title: 'Design & Engineering',
-      tagline: 'We turn vision into drawings.',
-      text: 'Our architects and structural engineers develop your concept into detailed, buildable drawings — balancing design ambition with engineering reality and budget.',
-      image: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1200&q=80',
-      alt: 'Architectural drawing and blueprint detail',
-      meta: 'Step 2 / Design',
-    },
-    {
-      num: '03',
-      title: 'Construction & Delivery',
-      tagline: 'We build it, then we stand behind it.',
-      text: 'Our site teams execute the build under continuous engineering supervision, with quality checks at every milestone through to final handover and beyond.',
-      image: 'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=1200&q=80',
-      alt: 'Construction workers on an active site',
-      meta: 'Step 3 / Build',
-    },
+  const images = [
+    'https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=1200&q=80',
   ]
+  const steps = t.process.steps.map((step, i) => ({
+    ...step,
+    num: String(i + 1).padStart(2, '0'),
+    image: images[i],
+  }))
 
   return (
     <section id="process" ref={containerRef} className="relative px-4 sm:px-6 py-20">
       <div className="max-w-7xl mx-auto mb-16 px-2 sm:px-10">
-        <span className="font-mono text-xs uppercase tracking-[0.25em] text-accent-dark">╱ How we work</span>
+        <span className="font-mono text-xs uppercase tracking-[0.25em] text-accent-dark">{t.process.eyebrow}</span>
         <h2 className="font-display font-extrabold text-4xl sm:text-5xl md:text-6xl text-ink mt-4 leading-[1.05] tracking-tight max-w-3xl">
-          Three steps.
-          <span className="block font-serif italic font-medium text-accent-dark">No surprises.</span>
+          {t.process.title1}
+          <span className="block font-serif italic font-medium text-accent-dark">{t.process.title2}</span>
         </h2>
       </div>
 
@@ -1088,7 +1002,7 @@ function Protocol() {
                 <div className="flex items-center justify-between">
                   <span className="font-mono text-xs uppercase tracking-[0.25em] text-muted">{step.meta}</span>
                   <span className="font-mono text-[10px] uppercase tracking-widest text-accent-dark bg-accent/10 px-2.5 py-1 rounded-full">
-                    SMART Protocol
+                    {t.process.badge}
                   </span>
                 </div>
 
@@ -1110,7 +1024,7 @@ function Protocol() {
                 <div className="absolute inset-0 bg-gradient-to-t from-deep/60 via-transparent to-deep/15" />
                 <div className="absolute top-5 left-5 flex items-center gap-2 bg-white/90 backdrop-blur-sm rounded-full pl-3 pr-4 py-1.5 shadow-lg">
                   <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-                  <span className="font-mono text-[10px] uppercase tracking-widest text-ink">Step {step.num}</span>
+                  <span className="font-mono text-[10px] uppercase tracking-widest text-ink">{t.process.step} {step.num}</span>
                 </div>
                 <div className="absolute bottom-4 right-4 font-mono text-[10px] uppercase tracking-widest text-white/70">
                   {step.num} / SMART Architecture
@@ -1128,6 +1042,7 @@ function Protocol() {
    All Services Grid
 ---------------------------------------------------------------- */
 function ServicesGrid() {
+  const { t } = useLang()
   const ref = useRef(null)
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -1152,21 +1067,18 @@ function ServicesGrid() {
       <div className="relative max-w-7xl mx-auto">
         <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-6 mb-14">
           <div>
-            <span className="font-mono text-xs uppercase tracking-[0.25em] text-accent-light">╱ Everything we do</span>
+            <span className="font-mono text-xs uppercase tracking-[0.25em] text-accent-light">{t.services.eyebrow}</span>
             <h2 className="font-display font-extrabold text-4xl sm:text-5xl md:text-6xl mt-4 leading-[1.05] tracking-tight">
-              The full scope,
-              <span className="block font-serif italic font-medium text-primary-light">under one roof.</span>
+              {t.services.title1}
+              <span className="block font-serif italic font-medium text-primary-light">{t.services.title2}</span>
             </h2>
           </div>
-          <p className="text-white/60 max-w-md text-base leading-relaxed">
-            We handle projects of every scale — residential and commercial, public and private — with home
-            base in Buea and reach across the Southwest Region.
-          </p>
+          <p className="text-white/60 max-w-md text-base leading-relaxed">{t.services.intro}</p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-white/10 rounded-4xl overflow-hidden">
-          {SERVICES_FULL.map((svc, i) => {
-            const Icon = svc.icon
+          {t.services.items.map((svc, i) => {
+            const Icon = SERVICE_ICONS[i]
             const isGreen = i % 2 === 0
             return (
               <div key={i} className="svc-tile group bg-deep p-7 sm:p-9 hover:bg-white/[0.02] transition-colors duration-500 relative">
@@ -1199,6 +1111,7 @@ function ServicesGrid() {
    Trust Signals
 ---------------------------------------------------------------- */
 function TrustSignals() {
+  const { t } = useLang()
   const ref = useRef(null)
   const [visible, setVisible] = useState(false)
 
@@ -1218,34 +1131,20 @@ function TrustSignals() {
     return () => observer.disconnect()
   }, [])
 
-  const badges = [
-    {
-      Icon: ShieldCheck,
-      title: 'Licensed Engineers',
-      text: 'Every project is designed and supervised by registered, qualified engineers — technical expertise from concept to completion.',
-      tone: 'accent',
-    },
-    {
-      Icon: Award,
-      title: 'Led by Engr. Ebua Fidelis Mvo',
-      text: 'Our CEO holds an MTech in Civil Engineering and DPET 2 certification, bringing hands-on technical leadership to every project.',
-      tone: 'accent',
-    },
-    {
-      Icon: Clock,
-      title: '10+ Years of Practice',
-      text: 'A decade of architecture, civil engineering, and construction management experience delivering durable, cost-effective results.',
-      tone: 'primary',
-    },
+  const looks = [
+    { Icon: ShieldCheck, tone: 'accent' },
+    { Icon: Award, tone: 'accent' },
+    { Icon: Clock, tone: 'primary' },
   ]
+  const badges = t.trust.badges.map((b, i) => ({ ...b, ...looks[i] }))
 
   return (
     <section ref={ref} className="relative py-14 sm:py-20 px-6">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-8">
-          <span className="font-mono text-xs uppercase tracking-[0.25em] text-accent-dark">╱ Why trust us</span>
+          <span className="font-mono text-xs uppercase tracking-[0.25em] text-accent-dark">{t.trust.eyebrow}</span>
           <h2 className="font-display font-extrabold text-3xl sm:text-4xl md:text-5xl text-ink mt-3 tracking-tight">
-            More than a contractor.
+            {t.trust.title}
           </h2>
         </div>
 
@@ -1270,7 +1169,7 @@ function TrustSignals() {
             href="#contact"
             className="btn-primary shadow-xl shadow-primary/30 px-7 py-3.5"
           >
-            Get a Free Consultation
+            {t.trust.cta}
             <ArrowRight className="h-4 w-4" />
           </a>
         </div>
@@ -1280,20 +1179,53 @@ function TrustSignals() {
 }
 
 /* ----------------------------------------------------------------
+   FAQ
+---------------------------------------------------------------- */
+function Faq() {
+  const { t } = useLang()
+
+  return (
+    <section id="faq" className="relative py-24 sm:py-32 px-6 sm:px-10 lg:px-16">
+      <div className="max-w-7xl mx-auto grid lg:grid-cols-12 gap-10 lg:gap-16">
+        <div className="lg:col-span-4">
+          <span className="font-mono text-xs uppercase tracking-[0.25em] text-accent-dark">{t.faq.eyebrow}</span>
+          <h2 className="font-display font-extrabold text-4xl sm:text-5xl text-ink mt-4 leading-[1.05] tracking-tight">
+            {t.faq.title1}
+            <span className="block font-serif italic font-medium text-accent-dark">{t.faq.title2}</span>
+          </h2>
+          <p className="text-muted text-lg mt-6 leading-relaxed">{t.faq.intro}</p>
+          <a
+            href={whatsappLink(t.whatsappButton.greeting)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-primary px-6 py-3.5 mt-8"
+          >
+            <MessageCircle className="h-4 w-4" />
+            {t.faq.cta}
+          </a>
+        </div>
+
+        <div className="lg:col-span-8 divide-y divide-divider border-y border-divider">
+          {t.faq.items.map((item, i) => (
+            <details key={i} className="group py-1" open={i === 0}>
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-5 [&::-webkit-details-marker]:hidden">
+                <h3 className="font-display font-semibold text-lg sm:text-xl text-ink">{item.q}</h3>
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-divider text-accent-dark transition-transform duration-300 group-open:rotate-45 group-open:bg-accent/10">
+                  <Plus className="h-4 w-4" />
+                </span>
+              </summary>
+              <p className="text-muted leading-relaxed pb-6 pr-12 max-w-2xl">{item.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ----------------------------------------------------------------
    Contact Form
 ---------------------------------------------------------------- */
-const PROJECT_TYPES = [
-  'New building',
-  'Renovation / extension',
-  'Architectural drawings only',
-  'Structural / civil engineering',
-  'Road & infrastructure',
-  'Cost estimate / BoQ',
-  'Other',
-]
-const BUDGETS = ['Under 10M FCFA', '10M – 50M FCFA', '50M – 150M FCFA', 'Over 150M FCFA', 'Not sure yet']
-const TIMELINES = ['As soon as possible', 'Within 3 months', '3 – 6 months', '6+ months', 'Just exploring']
-
 const inputClass =
   'w-full bg-background border border-divider rounded-2xl px-4 py-3.5 text-ink placeholder-muted/60 focus:border-primary focus:ring-4 focus:ring-primary/15 outline-none transition font-body'
 
@@ -1323,6 +1255,7 @@ function Field({ label, type = 'text', required, value, onChange }) {
 }
 
 function SelectField({ label, options, required, value, onChange }) {
+  const { t } = useLang()
   const id = useId()
   return (
     <div>
@@ -1335,7 +1268,7 @@ function SelectField({ label, options, required, value, onChange }) {
           onChange={(e) => onChange(e.target.value)}
           className={`${inputClass} appearance-none pr-10 ${value ? '' : 'text-muted'}`}
         >
-          <option value="">Select…</option>
+          <option value="">{t.contact.select}</option>
           {options.map((o) => (
             <option key={o} value={o} className="text-ink">
               {o}
@@ -1348,17 +1281,18 @@ function SelectField({ label, options, required, value, onChange }) {
   )
 }
 
-function enquiryText(form) {
+// `m` is t.contact.message
+function enquiryText(form, m) {
   return [
-    'Hello SMART Architecture, I would like a quote.',
+    m.greeting,
     '',
-    `Name: ${form.name}`,
-    `Email: ${form.email}`,
-    form.phone ? `Phone: ${form.phone}` : null,
-    `Project type: ${form.projectType}`,
-    form.location ? `Location: ${form.location}` : null,
-    form.budget ? `Budget: ${form.budget}` : null,
-    form.timeline ? `Timeline: ${form.timeline}` : null,
+    `${m.name}: ${form.name}`,
+    `${m.email}: ${form.email}`,
+    form.phone ? `${m.phone}: ${form.phone}` : null,
+    `${m.projectType}: ${form.projectType}`,
+    form.location ? `${m.location}: ${form.location}` : null,
+    form.budget ? `${m.budget}: ${form.budget}` : null,
+    form.timeline ? `${m.timeline}: ${form.timeline}` : null,
     '',
     form.message,
   ]
@@ -1367,6 +1301,8 @@ function enquiryText(form) {
 }
 
 function ContactForm() {
+  const { t } = useLang()
+  const c = t.contact
   const [form, setForm] = useState({
     name: '',
     email: '',
@@ -1389,7 +1325,7 @@ function ContactForm() {
 
     if (!FORM_ENDPOINT) {
       // No form service configured yet: hand the enquiry over to WhatsApp, pre-filled.
-      window.open(whatsappLink(enquiryText(form)), '_blank', 'noopener')
+      window.open(whatsappLink(enquiryText(form, c.message)), '_blank', 'noopener')
       setStatus('whatsapp')
       return
     }
@@ -1397,7 +1333,7 @@ function ContactForm() {
     setStatus('sending')
     const data = new FormData()
     Object.entries(form).forEach(([k, v]) => data.append(k, v))
-    data.append('_subject', `New quote request: ${form.projectType} — ${form.name}`)
+    data.append('_subject', c.subject(form.projectType, form.name))
     files.forEach((f) => data.append('photos', f))
     try {
       const res = await fetch(FORM_ENDPOINT, { method: 'POST', body: data, headers: { Accept: 'application/json' } })
@@ -1416,14 +1352,12 @@ function ContactForm() {
       <div className="max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-12 gap-10 lg:gap-16">
           <div className="lg:col-span-5">
-            <span className="font-mono text-xs uppercase tracking-[0.25em] text-accent-dark">╱ Contact</span>
+            <span className="font-mono text-xs uppercase tracking-[0.25em] text-accent-dark">{c.eyebrow}</span>
             <h2 className="font-display font-extrabold text-4xl sm:text-5xl md:text-6xl text-ink mt-4 leading-[1.05] tracking-tight">
-              Let&apos;s build
-              <span className="block font-serif italic font-medium text-accent-dark">something real.</span>
+              {c.title1}
+              <span className="block font-serif italic font-medium text-accent-dark">{c.title2}</span>
             </h2>
-            <p className="text-muted text-lg mt-6 leading-relaxed max-w-md">
-              Tell us about your project and we&apos;ll get back to you to discuss scope, budget, and next steps.
-            </p>
+            <p className="text-muted text-lg mt-6 leading-relaxed max-w-md">{c.intro}</p>
 
             <div className="mt-10 space-y-4">
               <a href="tel:+237652370882" className="lift-on-hover flex items-center gap-4 group">
@@ -1431,7 +1365,7 @@ function ContactForm() {
                   <Phone className="h-5 w-5 text-primary group-hover:text-white" />
                 </span>
                 <span>
-                  <span className="block font-mono text-[10px] uppercase tracking-widest text-muted">Call the office</span>
+                  <span className="block font-mono text-[10px] uppercase tracking-widest text-muted">{c.callOffice}</span>
                   <span className="font-display font-semibold text-ink text-lg">+237 652 370 882</span>
                 </span>
               </a>
@@ -1441,7 +1375,7 @@ function ContactForm() {
                   <Phone className="h-5 w-5 text-primary group-hover:text-white" />
                 </span>
                 <span>
-                  <span className="block font-mono text-[10px] uppercase tracking-widest text-muted">Alternative line</span>
+                  <span className="block font-mono text-[10px] uppercase tracking-widest text-muted">{c.altLine}</span>
                   <span className="font-display font-semibold text-ink text-lg">+237 679 684 854</span>
                 </span>
               </a>
@@ -1451,7 +1385,7 @@ function ContactForm() {
                   <Phone className="h-5 w-5 text-primary group-hover:text-white" />
                 </span>
                 <span>
-                  <span className="block font-mono text-[10px] uppercase tracking-widest text-muted">Speak to the CEO</span>
+                  <span className="block font-mono text-[10px] uppercase tracking-widest text-muted">{c.ceo}</span>
                   <span className="font-display font-semibold text-ink text-lg">+237 677 915 878</span>
                 </span>
               </a>
@@ -1461,8 +1395,8 @@ function ContactForm() {
                   <MessageCircle className="h-5 w-5 text-accent-dark group-hover:text-white" />
                 </span>
                 <span>
-                  <span className="block font-mono text-[10px] uppercase tracking-widest text-muted">Chat on WhatsApp</span>
-                  <span className="font-display font-semibold text-ink text-lg">Message us directly</span>
+                  <span className="block font-mono text-[10px] uppercase tracking-widest text-muted">{c.whatsapp}</span>
+                  <span className="font-display font-semibold text-ink text-lg">{c.whatsappSub}</span>
                 </span>
               </a>
 
@@ -1471,7 +1405,7 @@ function ContactForm() {
                   <Mail className="h-5 w-5 text-primary group-hover:text-white" />
                 </span>
                 <span>
-                  <span className="block font-mono text-[10px] uppercase tracking-widest text-muted">Email us</span>
+                  <span className="block font-mono text-[10px] uppercase tracking-widest text-muted">{c.email}</span>
                   <span className="font-display font-semibold text-ink text-lg">ebuafield@gmail.com</span>
                 </span>
               </a>
@@ -1481,7 +1415,7 @@ function ContactForm() {
                   <MapPin className="h-5 w-5 text-primary" />
                 </span>
                 <span>
-                  <span className="block font-mono text-[10px] uppercase tracking-widest text-muted">Our office</span>
+                  <span className="block font-mono text-[10px] uppercase tracking-widest text-muted">{c.office}</span>
                   <span className="font-display font-semibold text-ink text-lg">Bomaka, Opposite FHS, Buea</span>
                 </span>
               </div>
@@ -1489,12 +1423,9 @@ function ContactForm() {
 
             <div className="mt-10 p-5 rounded-3xl bg-accent/5 border border-accent/15">
               <p className="font-mono text-[10px] uppercase tracking-widest text-accent-dark mb-2">
-                Project confidentiality
+                {c.confidentialityTitle}
               </p>
-              <p className="text-sm text-muted leading-relaxed">
-                Your project details are kept strictly confidential. We only use your information to discuss
-                your inquiry and never share it with third parties.
-              </p>
+              <p className="text-sm text-muted leading-relaxed">{c.confidentiality}</p>
             </div>
           </div>
 
@@ -1503,26 +1434,26 @@ function ContactForm() {
               {status !== 'sent' && status !== 'whatsapp' ? (
                 <>
                   <div className="grid sm:grid-cols-2 gap-5">
-                    <Field label="Name" required value={form.name} onChange={set('name')} />
-                    <Field label="Email address" type="email" required value={form.email} onChange={set('email')} />
-                    <Field label="Phone / WhatsApp" type="tel" value={form.phone} onChange={set('phone')} />
-                    <Field label="Project location" value={form.location} onChange={set('location')} />
-                    <SelectField label="Project type" required options={PROJECT_TYPES} value={form.projectType} onChange={set('projectType')} />
-                    <SelectField label="Estimated budget" options={BUDGETS} value={form.budget} onChange={set('budget')} />
+                    <Field label={c.fields.name} required value={form.name} onChange={set('name')} />
+                    <Field label={c.fields.email} type="email" required value={form.email} onChange={set('email')} />
+                    <Field label={c.fields.phone} type="tel" value={form.phone} onChange={set('phone')} />
+                    <Field label={c.fields.location} value={form.location} onChange={set('location')} />
+                    <SelectField label={c.fields.projectType} required options={c.projectTypes} value={form.projectType} onChange={set('projectType')} />
+                    <SelectField label={c.fields.budget} options={c.budgets} value={form.budget} onChange={set('budget')} />
                     <div className="sm:col-span-2">
-                      <SelectField label="When do you want to start?" options={TIMELINES} value={form.timeline} onChange={set('timeline')} />
+                      <SelectField label={c.fields.timeline} options={c.timelines} value={form.timeline} onChange={set('timeline')} />
                     </div>
                   </div>
 
                   <div className="mt-5">
-                    <FieldLabel htmlFor="enquiry-message" label="Your message" required />
+                    <FieldLabel htmlFor="enquiry-message" label={c.fields.message} required />
                     <textarea
                       id="enquiry-message"
                       value={form.message}
                       onChange={(e) => set('message')(e.target.value)}
                       required
                       rows={5}
-                      placeholder="Briefly describe your project: size, number of floors, whether you have land or plans already..."
+                      placeholder={c.messagePlaceholder}
                       className={`${inputClass} resize-none`}
                     />
                   </div>
@@ -1544,8 +1475,8 @@ function ContactForm() {
                     <input type="file" multiple id="file-up" className="hidden" onChange={(e) => handleFiles(e.target.files)} accept="image/*" />
                     <label htmlFor="file-up" className="cursor-pointer block">
                       <Upload className="h-6 w-6 mx-auto text-primary-dark mb-2" />
-                      <p className="font-display font-semibold text-ink text-sm">Attach site photos or reference images</p>
-                      <p className="text-xs text-muted mt-1">Click or drag files here (max 5 images)</p>
+                      <p className="font-display font-semibold text-ink text-sm">{c.attachTitle}</p>
+                      <p className="text-xs text-muted mt-1">{c.attachSub}</p>
                       {files.length > 0 && (
                         <div className="mt-4 flex flex-wrap gap-2 justify-center">
                           {files.map((f, i) => (
@@ -1561,26 +1492,24 @@ function ContactForm() {
 
                   {status === 'error' && (
                     <p role="alert" className="mt-5 text-sm text-red-700 bg-red-50 border border-red-200 rounded-2xl px-4 py-3">
-                      Your enquiry couldn&apos;t be sent. Please try again, or{' '}
-                      <a href={whatsappLink(enquiryText(form))} target="_blank" rel="noopener noreferrer" className="font-semibold underline">
-                        send it on WhatsApp
-                      </a>{' '}
-                      instead.
+                      {c.errorBefore}{' '}
+                      <a href={whatsappLink(enquiryText(form, c.message))} target="_blank" rel="noopener noreferrer" className="font-semibold underline">
+                        {c.errorLink}
+                      </a>
+                      {c.errorAfter}
                     </p>
                   )}
 
                   <div className="mt-7 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <p className="text-xs text-muted">
-                      {FORM_ENDPOINT
-                        ? 'We contact you as soon as possible. Fields marked * are required.'
-                        : 'Your enquiry opens in WhatsApp, ready to send. Fields marked * are required.'}
+                      {FORM_ENDPOINT ? c.noteEndpoint : c.noteWhatsapp}
                     </p>
                     <button
                       type="submit"
                       disabled={status === 'sending'}
                       className="btn-primary px-7 py-3.5 disabled:opacity-50"
                     >
-                      {status === 'sending' ? 'Sending...' : FORM_ENDPOINT ? 'Send Inquiry' : 'Send via WhatsApp'}
+                      {status === 'sending' ? c.sending : FORM_ENDPOINT ? c.send : c.sendWhatsapp}
                       <ArrowRight className="h-4 w-4" />
                     </button>
                   </div>
@@ -1592,24 +1521,20 @@ function ContactForm() {
                   </div>
                   {status === 'sent' ? (
                     <>
-                      <h3 className="font-display font-bold text-2xl text-ink mb-3">Thank you for reaching out</h3>
-                      <p className="text-muted max-w-md mx-auto">
-                        We&apos;ll get back to you shortly to discuss your project.
-                      </p>
+                      <h3 className="font-display font-bold text-2xl text-ink mb-3">{c.sentTitle}</h3>
+                      <p className="text-muted max-w-md mx-auto">{c.sentText}</p>
                     </>
                   ) : (
                     <>
-                      <h3 className="font-display font-bold text-2xl text-ink mb-3">Almost done: press send in WhatsApp</h3>
-                      <p className="text-muted max-w-md mx-auto">
-                        Your enquiry is ready in WhatsApp. Feel free to attach site photos or plans in the chat.
-                      </p>
+                      <h3 className="font-display font-bold text-2xl text-ink mb-3">{c.waTitle}</h3>
+                      <p className="text-muted max-w-md mx-auto">{c.waText}</p>
                       <a
-                        href={whatsappLink(enquiryText(form))}
+                        href={whatsappLink(enquiryText(form, c.message))}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="btn-primary px-6 py-3 mt-6"
                       >
-                        WhatsApp didn&apos;t open? Tap here
+                        {c.waRetry}
                       </a>
                     </>
                   )}
@@ -1627,6 +1552,8 @@ function ContactForm() {
    Footer
 ---------------------------------------------------------------- */
 function Footer() {
+  const { t, to } = useLang()
+  const f = t.footer
   return (
     <footer className="relative bg-deep text-white rounded-t-6xl mt-12 overflow-hidden">
       <div className="absolute inset-0 grid-bg opacity-15" />
@@ -1636,18 +1563,16 @@ function Footer() {
       <div className="relative px-6 sm:px-10 lg:px-16 pt-20 pb-10 max-w-7xl mx-auto">
         <div className="border-b border-white/10 pb-12 mb-12">
           <h2 className="font-display font-extrabold text-5xl sm:text-7xl md:text-8xl leading-[0.92] tracking-tight">
-            We Transform Your
-            <span className="font-serif italic font-medium text-accent-light block">Dreams To Reality.</span>
+            {f.tagline1}
+            <span className="font-serif italic font-medium text-accent-light block">{f.tagline2}</span>
           </h2>
           <div className="flex flex-col sm:flex-row sm:items-end justify-between mt-8 gap-6">
-            <p className="text-white/50 max-w-md">
-              SMART Architecture &amp; Construction Co. Ltd — home base in Buea, serving clients across Cameroon.
-            </p>
+            <p className="text-white/50 max-w-md">{f.blurb}</p>
             <a
               href="#contact"
               className="btn-primary px-7 py-3.5 self-start sm:self-auto"
             >
-              Get a Free Consultation
+              {t.hero.cta}
               <ArrowRight className="h-4 w-4" />
             </a>
           </div>
@@ -1659,20 +1584,15 @@ function Footer() {
               <Logo className="h-14 w-14" />
               <span className="font-display font-black text-lg text-accent-light">SMART Architecture</span>
             </div>
-            <p className="text-white/50 text-sm leading-relaxed max-w-xs">
-              A modern engineering consultancy delivering architectural design, civil engineering, structural
-              engineering, and construction management for residential, commercial, institutional, and
-              industrial projects.
-            </p>
-            <p className="font-mono text-[10px] uppercase tracking-widest text-white/30 mt-6">
-              Led by Engr. Ebua Fidelis Mvo · MTech Civil Engineering · DPET 2
-            </p>
+            <p className="text-white/50 text-sm leading-relaxed max-w-xs">{f.about}</p>
+            <p className="font-mono text-[10px] uppercase tracking-widest text-white/30 mt-6">{f.ceoLine}</p>
+            <LangToggle tone="dark" className="mt-6" />
           </div>
 
           <div>
-            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-accent-light mb-4">Services</p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-accent-light mb-4">{f.services}</p>
             <ul className="space-y-2.5">
-              {SERVICES_FULL.slice(0, 4).map((s, i) => (
+              {t.services.items.slice(0, 4).map((s, i) => (
                 <li key={i}>
                   <a href="#services" className="text-white/65 hover:text-primary transition text-sm">
                     {s.title}
@@ -1683,17 +1603,20 @@ function Footer() {
           </div>
 
           <div>
-            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-primary mb-4">Company</p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-primary mb-4">{f.company}</p>
             <ul className="space-y-2.5">
-              <li><a href="#philosophy" className="text-white/65 hover:text-primary transition text-sm">Philosophy</a></li>
-              <li><a href="#projects" className="text-white/65 hover:text-primary transition text-sm">Projects</a></li>
-              <li><a href="#process" className="text-white/65 hover:text-primary transition text-sm">Process</a></li>
-              <li><a href="#contact" className="text-white/65 hover:text-primary transition text-sm">Contact</a></li>
+              {['philosophy', 'projects', 'process', 'faq', 'contact'].map((key) => (
+                <li key={key}>
+                  <a href={`#${key}`} className="text-white/65 hover:text-primary transition text-sm">
+                    {key === 'faq' ? f.faq : t.nav.links[key]}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
 
           <div>
-            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-accent-light mb-4">Contact</p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-accent-light mb-4">{f.contact}</p>
             <ul className="space-y-2.5">
               <li>
                 <a href="tel:+237652370882" className="text-white/65 hover:text-primary transition text-sm">
@@ -1712,7 +1635,7 @@ function Footer() {
               </li>
               <li>
                 <a href={whatsappLink()} target="_blank" rel="noopener noreferrer" className="text-white/65 hover:text-primary transition text-sm">
-                  WhatsApp us
+                  {f.whatsapp}
                 </a>
               </li>
               <li>
@@ -1720,7 +1643,7 @@ function Footer() {
                   ebuafield@gmail.com
                 </a>
               </li>
-              <li className="text-white/65 text-sm">Bomaka, Opposite FHS, Buea, Cameroon</li>
+              <li className="text-white/65 text-sm">{f.address}</li>
               <li className="text-white/65 text-sm">Facebook — SMARCO Co. LTD</li>
             </ul>
           </div>
@@ -1733,13 +1656,13 @@ function Footer() {
               <span className="relative h-2 w-2 rounded-full bg-accent-light" />
             </span>
             <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-white/60">
-              Currently Building · Open For New Projects
+              {f.status}
             </span>
           </div>
 
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-white/50 text-xs font-mono">
-            <Link to="/privacy" className="hover:text-primary transition">Privacy Policy</Link>
-            <Link to="/terms" className="hover:text-primary transition">Terms of Service</Link>
+            <Link to={to('/privacy')} className="hover:text-primary transition">{f.privacy}</Link>
+            <Link to={to('/terms')} className="hover:text-primary transition">{f.terms}</Link>
             <span>© 2026 SMART Architecture &amp; Construction Co. Ltd</span>
           </div>
         </div>
@@ -1752,16 +1675,17 @@ function Footer() {
    Floating WhatsApp button
 ---------------------------------------------------------------- */
 function WhatsAppButton() {
+  const { t } = useLang()
   return (
     <a
-      href={whatsappLink('Hello SMART Architecture, I would like to discuss a project.')}
+      href={whatsappLink(t.whatsappButton.greeting)}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label="Chat with us on WhatsApp"
+      aria-label={t.whatsappButton.label}
       className="fixed bottom-5 right-5 sm:bottom-7 sm:right-7 z-40 flex items-center gap-2 rounded-full bg-[#25D366] text-white shadow-xl shadow-black/20 pl-4 pr-5 py-3.5 hover:brightness-105 hover:-translate-y-0.5 transition"
     >
       <MessageCircle className="h-5 w-5" strokeWidth={2.2} />
-      <span className="hidden sm:inline font-semibold text-sm">WhatsApp</span>
+      <span className="hidden sm:inline font-semibold text-sm">{t.whatsappButton.short}</span>
     </a>
   )
 }
@@ -1770,6 +1694,7 @@ function WhatsAppButton() {
    App
 ---------------------------------------------------------------- */
 export default function App() {
+  const { t } = useLang()
   useEffect(() => {
     const t1 = setTimeout(() => ScrollTrigger.refresh(), 200)
     const t2 = setTimeout(() => ScrollTrigger.refresh(), 1000)
@@ -1781,7 +1706,7 @@ export default function App() {
 
   return (
     <div className="relative">
-      <Seo path="/" />
+      <Seo title={t.seo.title} description={t.seo.description} path="/" />
       <div className="noise-overlay" />
       <Navbar />
       <main>
@@ -1792,6 +1717,7 @@ export default function App() {
         <Protocol />
         <ServicesGrid />
         <TrustSignals />
+        <Faq />
         <ContactForm />
       </main>
       <Footer />
